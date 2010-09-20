@@ -1,0 +1,31 @@
+<link rel="stylesheet" type="text/css" media="screen" href="@{'/public/stylesheets/play-pagination.css'}">
+%{
+int __firstPage = 1;
+int __currentPage = _items.pageNumber;
+if (__currentPage > 3) {
+	__firstPage = __currentPage - 2;
+}
+int __maxPage = _items.pageCount;
+int __lastPage = __currentPage + 2;
+if (__lastPage > __maxPage) {
+	__lastPage = __maxPage;
+}
+boolean __hasNext = _items.hasNextPage;
+boolean __hasPrev = _items.hasPreviousPage;
+%}
+<div class="pagination-container">
+	<ul class="pagination">
+		<li class="${__hasPrev ? 'previous' : 'previous-off'}">&laquo; Previous</li>
+%{
+for (__idx = __firstPage; __idx <= __lastPage; __idx++) {
+boolean __active = __currentPage == __idx;
+%}
+		<li><a class="${__active ? 'active' : 'inactive'}" href="?page=${__idx}">${__idx}</a></li>
+%{
+}
+%}
+		<li class="${__hasNext ? 'next' : 'next-off'}"><a href="?page=2">Next &raquo;</a></li>
+	</ul>
+	<br style="clear:both;"/>
+	<span class="summary">Displaying rows ${_items.firstRowIndex + 1} to ${_items.firstRowIndex + _items.pageSize} out of ${_items.rowCount} entries</span>
+</div>

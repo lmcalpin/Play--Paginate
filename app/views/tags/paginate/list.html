@@ -1,0 +1,8 @@
+%{
+for (_r in _items.currentPage) {
+	play.templates.Template.layoutData.get().put(_as, _r);
+%}
+	#{doBody/}
+%{
+}
+%}

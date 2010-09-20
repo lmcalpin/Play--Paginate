@@ -1,0 +1,7 @@
+.classpath
+.project
+bin
+dist
+eclipse
+.tmp_*.html.*~
+.svn

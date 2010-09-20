@@ -1,0 +1,57 @@
+*Play--Scaffold*
+
+To use, reference the module from your application.conf:
+module.scaffold=C:/Path/To/Play/Modules/scaffold/
+
+Then create your project:
+play new
+
+Actually, maybe you should create your project first, and then edit its application.conf.
+
+Now, add some JPA or Siena models. The model entities have to extend play.db.jpa.Model or siena.Model.
+
+Then run:
+play scaffold:gen
+
+Then launch your application:
+play run
+
+*Additional Options*
+
+--with-layout: 
+Creates the main.html template layout file and an Application.index view which simply enumerates your controllers.  Because these files already exist in the default Play! project, you usually need to use --overwrite to ensure they are written. If you don't want controllers and views to be written as well, use --exclude:~ to omit them.
+
+--with-login:
+Requires you to use the secure module as well.  This will cause generated controllers to be marked with the @With(Secure.class) annotation to require a login.  It also creates a model called User, a default authentify implementation and, if --with-layout is specified, will add Login | Logout links to the Application.index home page.  The User model extends play.db.jpa.Model.  If you are using an alternative ORM, you are on your own (at this time.)
+
+--include=...:
+Allows you to restrict controller and view scaffolding to the specified models.  Allows a "~" wildcard.  For example --include=a~s will only build a controller and views for models that begin with "a" and end with "s".
+
+--exclude=...:
+Allows you to restrict controller and view scaffolding to the specified models.  Allows a "~" wildcard.  For example --exclude=a~s will only build a controller and views for models that DO NOT begin with "a" and end with "s".  If both --include and --exclude are specified, --exclude has precedence.
+
+--overwrite
+By default, we won't overwrite files if they already exist.  This flag will instruct us to overwrite anything we are trying to generate, even if it exists already.
+
+*Model Annotations*
+
+We try to infer as much information as possible from the model, but it could be useful to instruct the
+scaffolding code to generate (or ignore) fields in a particular fashion.  We allow you to use two annotations
+to control this behavior:
+
+@NoScaffolding: this causes the scaffolding generator to ignore the annotated field
+
+@ViewScaffoldingOverride: this lets you define the FormElementType that you would like an annotated field to
+be rendered as
+
+* KNOWN ISSUES *
+
+ManyToOne dropdowns will show a (None) field if they are not flagged with the @Required annotation.  On Play!
+1.0, this binds to an empty model with a null id which will likely fail to save due to a TransientObjectException.
+On Play! 1.1, this binds to a null field, which is what we would typically want.
+
+ManyToMany multiple selection boxes do not work on Play! 1.0.  They do appear to work as expected on Play! 1.1.
+
+Because both of these issues work on Play! 1.1, no attempt will be made to correct them.  Once Play! 1.1 is released
+to production, no further attempt to preserve compatibility with Play! 1.0 will be made.
+
