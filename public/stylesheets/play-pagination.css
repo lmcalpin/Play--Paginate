@@ -22,12 +22,15 @@ ul.pagination {
 	margin-right : 2px;
 }
 
-.pagination .previous-off,.pagination .next-off {
+.pagination .previous-off a,
+.pagination .next-off a, 
+.pagination .off a:link, 
+.pagination .off a:visited {
 	color: #888888;
 	font-weight: bold;
 }
 
-.pagination .next a,.pagination .previous a {
+.pagination .next a, .pagination .previous a, .pagination .first a, .pagination .last a {
 	font-weight: bold;
 	color: #00000;
 }

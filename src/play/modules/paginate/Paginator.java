@@ -44,7 +44,7 @@ import play.mvc.Scope;
  * exposes helper methods to display one page at a time.
  * 
  * 3. Paginator(Class<T> typeToken, int recordCount): does a callback to 
- * load each page using an implementation of IndexedRecordLocator instantiated
+ * load each page using an implementation of IndexedRecordLocator provided
  * by a subclass of Paginator.
  * 
  * The former approach is useful if you are displaying thousands or tens of
