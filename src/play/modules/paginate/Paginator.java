@@ -95,11 +95,15 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 		Scope.Params params = Scope.Params.current();
 		if (params != null) {
 			String page = (String) params.get("page");
-			try {
-				int pageNumber = Integer.parseInt(page);
-				setPageNumber(pageNumber);
-			} catch (Throwable t) {
-				Logger.warn(t, "Error parsing page: %s", page);
+			if (page == null) {
+				setPageNumber(1);
+			} else {
+				try {
+					int pageNumber = Integer.parseInt(page);
+					setPageNumber(pageNumber);
+				} catch (Throwable t) {
+					Logger.warn(t, "Error parsing page: %s", page);
+				}
 			}
 			this.viewParams = new HashMap<String,Object>();
 			this.viewParams.putAll(params.allSimple());
@@ -343,7 +347,7 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 	}
 
 	private List<T> fetchPage(List<K> keys) {
-		return locator.findByKey(keys);
+		return getRecordLocator().findByKey(keys);
 	}
 
 	private static class ListItr<K, T> implements Iterator<T>, ListIterator<T> {
