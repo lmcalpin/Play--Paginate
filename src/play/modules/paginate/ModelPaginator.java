@@ -22,11 +22,16 @@ import java.io.Serializable;
 import java.util.List;
 
 import play.db.jpa.Model;
+import play.modules.paginate.locator.JPAIndexedRecordLocator;
+import play.modules.paginate.locator.JPAKeyedRecordLocator;
 
 public class ModelPaginator<T extends Model> extends Paginator<Long, T> implements
 		Serializable {
 	private static final long serialVersionUID = -2064492602195638937L;
 
+	private transient KeyedRecordLocator<Long, T> keyedRecordLocator;
+	private transient IndexedRecordLocator<Long, T> indexedRecordLocator;
+	
 	public ModelPaginator(Class<T> typeToken, List<Long> keys, int pageSize) {
 		super(typeToken, keys, pageSize);
 	}
@@ -39,16 +44,35 @@ public class ModelPaginator<T extends Model> extends Paginator<Long, T> implemen
 		super(values);
 	}
 
+	public ModelPaginator(Class<T> typeToken, long rowCount) {
+		super(typeToken, (int)rowCount);
+	}
+
+	public ModelPaginator(Class<T> typeToken, long rowCount, int pageSize) {
+		super(typeToken, (int)rowCount, pageSize);
+	}
+
 	protected ModelPaginator() {}
 	
 	@Override
-	protected KeyedRecordLocator<Long, T> getRecordLocator() {
+	protected KeyedRecordLocator<Long, T> getKeyedRecordLocator() {
 		if (typeToken == null)
 			throw new IllegalStateException(
 					"Record locators are only used when the list paginates over keys; a type token is required");
-		if (locator == null) {
-			locator = new JPAKeyedRecordLocator<Long, T>(typeToken);
+		if (keyedRecordLocator == null) {
+			keyedRecordLocator = new JPAKeyedRecordLocator<Long, T>(typeToken);
 		}
-		return locator;
+		return keyedRecordLocator;
+	}
+
+	@Override
+	protected IndexedRecordLocator<Long, T> getIndexedRecordLocator() {
+		if (typeToken == null)
+			throw new IllegalStateException(
+					"Record locators are only used when the list paginates over keys; a type token is required");
+		if (indexedRecordLocator == null) {
+			indexedRecordLocator = new JPAIndexedRecordLocator<Long, T>(typeToken);
+		}
+		return indexedRecordLocator;
 	}
 }

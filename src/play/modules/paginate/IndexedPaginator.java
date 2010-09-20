@@ -18,34 +18,31 @@
  */
 package play.modules.paginate;
 
-import java.io.Serializable;
 import java.util.List;
 
-import play.db.jpa.Model;
-
-public class ValuePaginator<V> extends Paginator<Object, V> implements
-		Serializable {
-	private static final long serialVersionUID = -2064492602195638937L;
-
-	public ValuePaginator(List<V> values) {
-		super(values);
+@SuppressWarnings("serial")
+public class IndexedPaginator<K,V> extends Paginator<K, V> {
+	private IndexedRecordLocator<K, V> locator;
+	
+	public IndexedPaginator(IndexedRecordLocator<K, V> locator, Class<V> typeToken, List<K> keys) {
+		this(locator, typeToken, keys, DEFAULT_PAGE_SIZE);
 	}
 
-	public ValuePaginator(List<V> values, int pageSize) {
-		super(values, pageSize);
+	public IndexedPaginator(IndexedRecordLocator<K, V> locator, Class<V> typeToken, List<K> keys, int pageSize) {
+		super(typeToken, keys, pageSize);
+		this.locator = locator;
 	}
 
-	protected ValuePaginator() {}
+	protected IndexedPaginator() {}
 	
 	// unused
 	@Override
-	protected KeyedRecordLocator<Object, V> getKeyedRecordLocator() {
+	protected KeyedRecordLocator<K, V> getKeyedRecordLocator() {
 		return null;
 	}
 
-	// unused
 	@Override
-	protected IndexedRecordLocator<Object, V> getIndexedRecordLocator() {
-		return null;
+	protected IndexedRecordLocator<K, V> getIndexedRecordLocator() {
+		return locator;
 	}
 }

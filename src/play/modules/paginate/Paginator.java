@@ -21,6 +21,7 @@ package play.modules.paginate;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,16 +33,19 @@ import play.db.jpa.Model;
 import play.mvc.Http.Request;
 import play.mvc.Router;
 import play.mvc.Scope;
-import play.utils.Utils.Maps;
 
 /**
- * Controls pagination for a list. It can be used in one of two ways:
+ * Controls pagination for a list. It can be used in one of three ways:
  * 
- * 1. PaginatingList(Class<T> typeToken, List<K> keys): receives a list of keys,
+ * 1. Paginator(Class<T> typeToken, List<K> keys): receives a list of keys,
  * and lazily loads each page.
  * 
- * 2. PaginatingList(List<T> values): receives all values in advance, and
+ * 2. Paginator(List<T> values): receives all values in advance, and
  * exposes helper methods to display one page at a time.
+ * 
+ * 3. Paginator(Class<T> typeToken, int recordCount): does a callback to 
+ * load each page using an implementation of IndexedRecordLocator instantiated
+ * by a subclass of Paginator.
  * 
  * The former approach is useful if you are displaying thousands or tens of
  * thousands of records. It is much faster to load just the keys
@@ -56,6 +60,8 @@ import play.utils.Utils.Maps;
 public abstract class Paginator<K, T> implements List<T>, Serializable {
 	private static final long serialVersionUID = -2064492602195638937L;
 
+	private enum PaginationStyle { BY_VALUE, BY_KEY, BY_CALLBACK };
+	
 	protected Class<T> typeToken;
 
 	private List<K> index;
@@ -69,19 +75,20 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 	private List<T> values;
 
 	private int pageNumber;
-
-	protected transient KeyedRecordLocator<K, T> locator;
+	
+	private PaginationStyle paginationStyle;
 
 	private String action;
 	private Map<String, Object> viewParams;
 
-	private static final int DEFAULT_PAGE_SIZE = 4;
+	public static final int DEFAULT_PAGE_SIZE = 20;
 
 	protected Paginator() {
 		this.pageSize = DEFAULT_PAGE_SIZE;
 		this.pages = new HashMap<Long, List<T>>();
 		this.pageNumber = 0;
-
+		this.paginationStyle = PaginationStyle.BY_VALUE;
+		
 		// capture view parameters from Play!
 		//this.viewParams = LocalVariablesNamesTracer.getLocalVariables();
 		
@@ -112,6 +119,7 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 
 	public Paginator(List<T> values) {
 		this(values, DEFAULT_PAGE_SIZE);
+		this.paginationStyle = PaginationStyle.BY_VALUE;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -120,10 +128,12 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 		this.values = values;
 		this.pageSize = pageSize;
 		this.rowCount = values.size();
+		this.paginationStyle = PaginationStyle.BY_VALUE;
 	}
 
 	public Paginator(Class<T> typeToken, List<K> keys) {
 		this(typeToken, keys, DEFAULT_PAGE_SIZE);
+		this.paginationStyle = PaginationStyle.BY_KEY;
 	}
 
 	public Paginator(Class<T> typeToken, List<K> keys, int pageSize) {
@@ -134,10 +144,26 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 		this.index = keys;
 		this.pageSize = pageSize;
 		this.rowCount = index.size();
+		this.paginationStyle = PaginationStyle.BY_KEY;
 	}
 
-	protected abstract KeyedRecordLocator<K, T> getRecordLocator();
+	public Paginator(Class<T> typeToken, int rowCount) {
+		this(typeToken, rowCount, DEFAULT_PAGE_SIZE);
+		this.paginationStyle = PaginationStyle.BY_CALLBACK;
+	}
+	
+	public Paginator(Class<T> typeToken, int rowCount, int pageSize) {
+		this();
+		this.paginationStyle = PaginationStyle.BY_CALLBACK;
+		this.rowCount = rowCount;
+		this.typeToken = typeToken;
+		this.pageSize = pageSize;
+	}
 
+	protected abstract KeyedRecordLocator<K, T> getKeyedRecordLocator();
+
+	protected abstract IndexedRecordLocator<K, T> getIndexedRecordLocator();
+	
 	public String getCallbackURL(int page) {
 		viewParams.put("page", String.valueOf(page));
 		return Router.reverse(action, viewParams).url;
@@ -311,10 +337,7 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 	}
 
 	public int size() {
-		if (index != null)
-			return index.size();
-		else
-			return values.size();
+		return rowCount;
 	}
 
 	public List<T> subList(int fromIndex, int toIndex) {
@@ -337,17 +360,18 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 
 	private List<T> fetchPage(int startRow) {
 		int lastRow = getLastRow(startRow, pageSize);
-		if (values == null) {
+		switch (paginationStyle) {
+		case BY_KEY:
 			List<K> keys = index.subList(startRow, lastRow);
-			return fetchPage(keys);
-		} else {
+			return getKeyedRecordLocator().findByKey(keys);
+		case BY_CALLBACK:
+			return getIndexedRecordLocator().findByIndex(startRow, pageSize);
+		default: // BY_VALUE
+			if (values == null)
+				return Collections.emptyList();
 			List<T> pageValues = values.subList(startRow, lastRow);
 			return pageValues;
 		}
-	}
-
-	private List<T> fetchPage(List<K> keys) {
-		return getRecordLocator().findByKey(keys);
 	}
 
 	private static class ListItr<K, T> implements Iterator<T>, ListIterator<T> {

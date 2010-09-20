@@ -20,27 +20,29 @@ package play.modules.paginate;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
-
-import play.db.jpa.JPA;
-
-public class JPAKeyedRecordLocator<K,Model> implements KeyedRecordLocator<K,Model> {
-	private Class<Model> typeToken;
+@SuppressWarnings("serial")
+public class MappedPaginator<K,V> extends Paginator<K, V> {
+	private KeyedRecordLocator<K, V> locator;
 	
-	public JPAKeyedRecordLocator(Class<Model> typeToken) {
-		this.typeToken = typeToken;
+	public MappedPaginator(KeyedRecordLocator<K, V> locator, Class<V> typeToken, List<K> keys) {
+		this(locator, typeToken, keys, DEFAULT_PAGE_SIZE);
 	}
+
+	public MappedPaginator(KeyedRecordLocator<K, V> locator, Class<V> typeToken, List<K> keys, int pageSize) {
+		super(typeToken, keys, pageSize);
+		this.locator = locator;
+	}
+
+	protected MappedPaginator() {}
 	
 	@Override
-	public List<Model> findByKey(List<K> input) {
-		Session session = (Session)JPA.em().getDelegate();
-		Criteria criteria = session.createCriteria(typeToken);
-		@SuppressWarnings("unchecked")
-		List<Model> returnMe = criteria.add(Restrictions.in("id", input)).addOrder(Order.asc("id")).list();
-		return returnMe;
+	protected KeyedRecordLocator<K, V> getKeyedRecordLocator() {
+		return locator;
 	}
 
+	// unused
+	@Override
+	protected IndexedRecordLocator<K, V> getIndexedRecordLocator() {
+		return null;
+	}
 }
