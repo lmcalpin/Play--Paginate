@@ -8,12 +8,24 @@ and
 
 Pagination controls are controlled by the view paginate/Controls.html and can be overridden in your project.
 
+*Using Paginator from your Controllers*
 
-The controllers need to wrap your Lists with an appropriate instance of the Paginator class.
-You can pass in either a List of Model objects OR a List of keys (the result of "SELECT id FROM TestModel").  For very, very large result sets, getting a List of keys is more efficient, though because each page is loaded lazily, there is the possibility of data aliasing occurring.
+The paginator can be used in one of three ways:
 
-	public static void index() {
-		List<TestModel> rows = play.db.jpa.JPA.em().createQuery("from TestModel").getResultList();
-		ModelPaginator entities = new ModelPaginator(rows);
-		render(entities);
-	}
+1) You can wrap the entire result set.  This is useful if the entire List is in memory already.
+
+List<Foo> values = ...;
+ValuePaginator entites = new ValuePaginator(values);
+render(entities);
+
+2) You can wrap the keys.  Paginator will lazily lookup the pages as they are rendered.
+
+List<Long> keys = ... "SELECT id FROM Foo" ... ;
+ModelPaginator entities = new ModelPaginator(Foo.class, keys);
+render(entities);
+
+3) You can supply the page count and Paginator will lazily load the pages on demand.
+
+long count = Foo.count();
+ModelPaginator entities = new ModelPaginator(Foo.class, count);
+render(entities);
