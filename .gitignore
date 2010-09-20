@@ -5,3 +5,4 @@ dist
 eclipse
 .tmp_*.html.*~
 .svn
+*.pyc

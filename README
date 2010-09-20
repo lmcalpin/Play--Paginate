@@ -8,6 +8,10 @@ and
 
 Pagination controls are controlled by the view paginate/Controls.html and can be overridden in your project.
 
+Add
+<link rel="stylesheet" type="text/css" media="screen" href="@{'/public/stylesheets/play-pagination.css'}">
+if you want to use the default stylesheet.
+
 *Using Paginator from your Controllers*
 
 The paginator can be used in one of three ways:
