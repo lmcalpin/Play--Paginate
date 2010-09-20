@@ -10,22 +10,24 @@ int __lastPage = __currentPage + 2;
 if (__lastPage > __maxPage) {
 	__lastPage = __maxPage;
 }
-boolean __hasNext = _items.hasNextPage;
 boolean __hasPrev = _items.hasPreviousPage;
+boolean __hasNext = _items.hasNextPage;
+String __prevURL = __hasPrev ? _items.getCallbackURL(__currentPage-1) : "#";
+String __nextURL = __hasNext ? _items.getCallbackURL(__currentPage+1) : "#";
 %}
 <div class="pagination-container">
 	<ul class="pagination">
-		<li class="${__hasPrev ? 'previous' : 'previous-off'}">&laquo; Previous</li>
+		<li class="${__hasPrev ? 'previous' : 'previous-off'}"><a href="${__prevURL}">&laquo; Previous</a></li>
 %{
 for (__idx = __firstPage; __idx <= __lastPage; __idx++) {
 boolean __active = __currentPage == __idx;
 %}
-		<li><a class="${__active ? 'active' : 'inactive'}" href="?page=${__idx}">${__idx}</a></li>
+		<li><a class="${__active ? 'active' : 'inactive'}" href="${_items.getCallbackURL(__idx)}">${__idx}</a></li>
 %{
 }
 %}
-		<li class="${__hasNext ? 'next' : 'next-off'}"><a href="?page=2">Next &raquo;</a></li>
+		<li class="${__hasNext ? 'next' : 'next-off'}"><a href="${__nextURL}">Next &raquo;</a></li>
 	</ul>
 	<br style="clear:both;"/>
-	<span class="summary">Displaying rows ${_items.firstRowIndex + 1} to ${_items.firstRowIndex + _items.pageSize} out of ${_items.rowCount} entries</span>
+	<span class="summary">Displaying rows ${_items.firstRowIndex + 1} to ${_items.lastRowIndex + 1} out of ${_items.rowCount} entries</span>
 </div>

@@ -25,7 +25,6 @@ ul.pagination {
 .pagination .previous-off,.pagination .next-off {
 	color: #888888;
 	font-weight: bold;
-	padding: 3px 4px;
 }
 
 .pagination .next a,.pagination .previous a {
@@ -37,7 +36,6 @@ ul.pagination {
 	color: #00000;
 	background-color: #DEDEDE;
 	font-weight : bold;
-	padding: 4px 6px;
 }
 
 .pagination a:link, .pagination a:visited {

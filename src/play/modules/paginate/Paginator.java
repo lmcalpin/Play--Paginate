@@ -1,7 +1,6 @@
 package play.modules.paginate;
 
 import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,8 +9,12 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import play.classloading.enhancers.LocalvariablesNamesEnhancer.LocalVariablesNamesTracer;
+import play.Logger;
 import play.db.jpa.Model;
+import play.mvc.Http.Request;
+import play.mvc.Router;
+import play.mvc.Scope;
+import play.utils.Utils.Maps;
 
 /**
  * Controls pagination for a list. It can be used in one of two ways:
@@ -51,6 +54,7 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 
 	protected transient KeyedRecordLocator<K, T> locator;
 
+	private String action;
 	private Map<String, Object> viewParams;
 
 	private static final int DEFAULT_PAGE_SIZE = 4;
@@ -59,9 +63,29 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 		this.pageSize = DEFAULT_PAGE_SIZE;
 		this.pages = new HashMap<Long, List<T>>();
 		this.pageNumber = 0;
-		
+
 		// capture view parameters from Play!
-		this.viewParams = LocalVariablesNamesTracer.getLocalVariables();
+		//this.viewParams = LocalVariablesNamesTracer.getLocalVariables();
+		
+		// capture controller and action that created this Paginator
+		Request request = Request.current();
+		if (request != null) {
+			this.action = request.action;
+		}
+
+		// set the current page
+		Scope.Params params = Scope.Params.current();
+		if (params != null) {
+			String page = (String) params.get("page");
+			try {
+				int pageNumber = Integer.parseInt(page);
+				setPageNumber(pageNumber);
+			} catch (Throwable t) {
+				Logger.warn(t, "Error parsing page: %s", page);
+			}
+			this.viewParams = new HashMap<String,Object>();
+			this.viewParams.putAll(params.allSimple());
+		}
 	}
 
 	public Paginator(List<T> values) {
@@ -91,6 +115,11 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 	}
 
 	protected abstract KeyedRecordLocator<K, T> getRecordLocator();
+
+	public String getCallbackURL(int page) {
+		viewParams.put("page", String.valueOf(page));
+		return Router.reverse(action, viewParams).url;
+	}
 
 	public boolean add(T o) {
 		throw new UnsupportedOperationException(
@@ -152,7 +181,7 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 	}
 
 	public List<T> getCurrentPage() {
-		return getPage(pageNumber);
+		return getPage(getFirstRowIndex());
 	}
 
 	public boolean getHasPreviousPage() {
@@ -173,6 +202,15 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 	public int getFirstRowIndex() {
 		int startRow = pageNumber * pageSize;
 		return startRow;
+	}
+
+	/**
+	 * @return the index of the last row displayed onscreen (0-based)
+	 */
+	public int getLastRowIndex() {
+		int startRow = getFirstRowIndex();
+		int lastRow = Math.min(getRowCount(), startRow + pageSize);
+		return lastRow - 1;
 	}
 
 	private List<T> getPage(int rowIndex) {

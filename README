@@ -2,10 +2,18 @@
 
 Adds two new tags:
 
-#{paginate.list/}, which works as a drop-in replacement for #{list/} to show one page at a time
+#{paginate.list items:var, as:'ref'/}, which works as a drop-in replacement for #{list/} to show one page at a time
 and
-#{paginate.controls/} to display the pagination controls
+#{paginate.controls items:var /} to display the pagination controls
 
 Pagination controls are controlled by the view paginate/Controls.html and can be overridden in your project.
 
 
+The controllers need to wrap your Lists with an appropriate instance of the Paginator class.
+You can pass in either a List of Model objects OR a List of keys (the result of "SELECT id FROM TestModel").  For very, very large result sets, getting a List of keys is more efficient, though because each page is loaded lazily, there is the possibility of data aliasing occurring.
+
+	public static void index() {
+		List<TestModel> rows = play.db.jpa.JPA.em().createQuery("from TestModel").getResultList();
+		ModelPaginator entities = new ModelPaginator(rows);
+		render(entities);
+	}
