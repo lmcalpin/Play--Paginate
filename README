@@ -6,9 +6,7 @@ Adds two new tags:
 and
 #{paginate.controls items:var /} to display the pagination controls
 
-Pagination controls are controlled by the view paginate/Controls.html and can be overridden in your project.
-
-Add
+Also, add
 <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/stylesheets/play-pagination.css'}">
 if you want to use the default stylesheet.
 
@@ -33,3 +31,19 @@ render(entities);
 long count = Foo.count();
 ModelPaginator entities = new ModelPaginator(Foo.class, count);
 render(entities);
+
+*Customization*
+ 
+Pagination controls are controlled by the view paginate/Controls.html and can be overridden in your project.
+
+If the row count summary option is enabled, you can also customize paginate/RowCountSummary.html to customize
+the footer (which, by default, displays the message: "Displaying rows X to Y out of Z records.").
+
+The following properties are available to customize pagination display:
+
+- get/setBoundaryControlsEnabled: determines whether the First and Last buttons are displayed
+- get/setPagesDisplayed: customizes the number of pages that show up between the forward/backward controls
+- get/setPageSize: determines the number of rows we display per page
+- get/setRowCountSummaryEnabled: determines whether the row count summary view template is displayed.  By 
+default, this area displays the message: "Displaying rows X to Y out of Z records."
+ 
