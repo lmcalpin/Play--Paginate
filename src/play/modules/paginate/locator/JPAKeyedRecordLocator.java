@@ -18,6 +18,7 @@
  */
 package play.modules.paginate.locator;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -28,7 +29,9 @@ import org.hibernate.criterion.Restrictions;
 import play.db.jpa.JPA;
 import play.modules.paginate.KeyedRecordLocator;
 
-public class JPAKeyedRecordLocator<K,Model> implements KeyedRecordLocator<K,Model> {
+public class JPAKeyedRecordLocator<K,Model> implements KeyedRecordLocator<K,Model>, Serializable {
+	private static final long serialVersionUID = -4079026940617050525L;
+	
 	private Class<Model> typeToken;
 	
 	public JPAKeyedRecordLocator(Class<Model> typeToken) {

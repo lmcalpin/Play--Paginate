@@ -18,13 +18,9 @@
  */
 package play.modules.paginate;
 
-import java.io.Serializable;
 import java.util.List;
 
-import play.db.jpa.Model;
-
-public class ValuePaginator<V> extends Paginator<Object, V> implements
-		Serializable {
+public class ValuePaginator<V> extends Paginator<Object, V> {
 	private static final long serialVersionUID = -2064492602195638937L;
 
 	public ValuePaginator(List<V> values) {

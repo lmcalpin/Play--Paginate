@@ -18,53 +18,67 @@
  */
 package play.modules.paginate;
 
-import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import play.db.jpa.Model;
-import play.modules.paginate.locator.JPAIndexedRecordLocator;
-import play.modules.paginate.locator.JPAKeyedRecordLocator;
 
-public class ModelPaginator<T extends Model> extends Paginator<Long, T> implements
-		Serializable {
+public class ModelPaginator<T extends Model> extends JPAPaginator<Long, T> {
 	private static final long serialVersionUID = -2064492602195638937L;
 
-	private transient KeyedRecordLocator<Long, T> keyedRecordLocator;
-	private transient IndexedRecordLocator<Long, T> indexedRecordLocator;
-	
+	public ModelPaginator() {
+		super();
+	}
+
 	public ModelPaginator(Class<T> typeToken, List<Long> keys) {
 		super(typeToken, keys);
+	}
+
+	public ModelPaginator(Class<T> typeToken, long rowCount,
+			IndexedRecordLocator<Long, T> locator) {
+		super(typeToken, rowCount, locator);
+	}
+
+	public ModelPaginator(Class<T> typeToken, String filter, Object... params) {
+		super(typeToken, filter, params);
+	}
+
+	public ModelPaginator(Class<T> typeToken, long rowCount) {
+		super(typeToken, rowCount);
 	}
 
 	public ModelPaginator(List<T> values) {
 		super(values);
 	}
 
-	public ModelPaginator(Class<T> typeToken, long rowCount) {
-		super(typeToken, (int)rowCount);
+	public ModelPaginator(Class<T> typeToken,
+			IndexedRecordLocator<Long, T> locator) {
+		this(typeToken, count(typeToken), locator);
 	}
 
-	protected ModelPaginator() {}
-	
-	@Override
-	protected KeyedRecordLocator<Long, T> getKeyedRecordLocator() {
-		if (typeToken == null)
-			throw new IllegalStateException(
-					"Record locators are only used when the list paginates over keys; a type token is required");
-		if (keyedRecordLocator == null) {
-			keyedRecordLocator = new JPAKeyedRecordLocator<Long, T>(typeToken);
-		}
-		return keyedRecordLocator;
+	public ModelPaginator(Class<T> typeToken) {
+		this(typeToken, count(typeToken));
 	}
 
-	@Override
-	protected IndexedRecordLocator<Long, T> getIndexedRecordLocator() {
-		if (typeToken == null)
-			throw new IllegalStateException(
-					"Record locators are only used when the list paginates over keys; a type token is required");
-		if (indexedRecordLocator == null) {
-			indexedRecordLocator = new JPAIndexedRecordLocator<Long, T>(typeToken);
+	private static <T extends Model> long count(Class<T> typeToken) {
+		Method method;
+		Long count = new Long(0);
+		try {
+			method = typeToken.getMethod("count");
+			count = (Long)method.invoke(typeToken);
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		} catch (InvocationTargetException e) {
+			throw new RuntimeException(e);
+		} catch (SecurityException e) {
+			throw new RuntimeException(e);
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException(e);
 		}
-		return indexedRecordLocator;
+		return count.longValue();
+		
 	}
 }

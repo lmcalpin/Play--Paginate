@@ -18,28 +18,59 @@
  */
 package play.modules.paginate.locator;
 
+import java.io.Serializable;
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+import javax.persistence.Query;
 
 import play.db.jpa.JPA;
 import play.modules.paginate.IndexedRecordLocator;
 
-public class JPAIndexedRecordLocator<K,Model> implements IndexedRecordLocator<K,Model> {
-	private Class<Model> typeToken;
+public class JPAIndexedRecordLocator<K,Model> implements IndexedRecordLocator<K,Model>, Serializable {
+	private static final long serialVersionUID = 1847759900112779643L;
+	
+	private final Class<Model> typeToken;
+	private final String filter;
+	private final Object[] params;
 	
 	public JPAIndexedRecordLocator(Class<Model> typeToken) {
+		this(typeToken, null);
+	}
+	
+	public JPAIndexedRecordLocator(Class<Model> typeToken, String filter, Object... params) {
 		this.typeToken = typeToken;
+		this.filter = filter;
+		this.params = params;
+	}
+	
+	public int count() {
+		return ((Long)query("SELECT COUNT(*)").getSingleResult()).intValue();
 	}
 	
 	@Override
 	public List<Model> findByIndex(int firstResult, int pageSize) {
 		@SuppressWarnings("unchecked")
-		List<Model> returnMe = JPA.em().createQuery("FROM " + typeToken.getSimpleName()).setFirstResult(firstResult).setMaxResults(pageSize).getResultList();
+		List<Model> returnMe = query(null).setFirstResult(firstResult).setMaxResults(pageSize).getResultList();
 		return returnMe;
 	}
 
+	private Query query(String select) {
+		StringBuilder hql = new StringBuilder();
+		if (select != null) {
+			hql.append(select);
+			hql.append(' ');
+		}
+		hql.append("FROM " + typeToken.getSimpleName());
+		if (filter != null) {
+			hql.append(" WHERE " + filter);
+		}
+		
+		Query query = JPA.em().createQuery(hql.toString());
+		if (params != null) {
+			for (int i = 0; i < params.length; i++) {
+				query.setParameter(i+1, params[i]);
+			}
+		}
+		return query;
+	}
 }

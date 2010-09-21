@@ -155,6 +155,10 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 		this.typeToken = typeToken;
 	}
 
+	public Paginator(Class<T> typeToken) {
+		this(typeToken, 0);
+	}
+	
 	protected abstract KeyedRecordLocator<K, T> getKeyedRecordLocator();
 
 	protected abstract IndexedRecordLocator<K, T> getIndexedRecordLocator();
@@ -213,6 +217,10 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 
 	public int getRowCount() {
 		return size();
+	}
+
+	protected void setRowCount(int rowCount) {
+		this.rowCount = rowCount;
 	}
 
 	public int getPageNumber() {

@@ -20,8 +20,9 @@ package play.modules.paginate;
 
 import java.util.List;
 
-@SuppressWarnings("serial")
 public class IndexedPaginator<K,V> extends Paginator<K, V> {
+	private static final long serialVersionUID = 8888238998297494494L;
+	
 	private IndexedRecordLocator<K, V> locator;
 	
 	public IndexedPaginator(IndexedRecordLocator<K, V> locator, Class<V> typeToken, List<K> keys) {
