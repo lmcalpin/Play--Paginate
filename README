@@ -26,10 +26,9 @@ List<Long> keys = ... "SELECT id FROM Foo" ... ;
 ModelPaginator entities = new ModelPaginator(Foo.class, keys);
 render(entities);
 
-3) You can supply the page count and Paginator will lazily load the pages on demand.
+3) You can supply a Play! Model and optionally a filter and let the Paginator figure out the rest.
 
-long count = Foo.count();
-ModelPaginator entities = new ModelPaginator(Foo.class, count);
+ModelPaginator entities = new ModelPaginator(Foo.class, "foo=?", "bar");
 render(entities);
 
 *Customization*
