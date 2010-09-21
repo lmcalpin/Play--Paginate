@@ -29,6 +29,7 @@ import java.util.ListIterator;
 import java.util.Map;
 
 import play.Logger;
+import play.Play;
 import play.db.jpa.Model;
 import play.mvc.Http.Request;
 import play.mvc.Router;
@@ -80,8 +81,13 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 
 	private String action;
 	private Map<String, Object> viewParams;
+	
+	// control options
+	private boolean boundaryControlsEnabled;
+	private boolean rowCountSummaryEnabled;
+	private int pagesDisplayed;
 
-	public static final int DEFAULT_PAGE_SIZE = 20;
+	private static final int DEFAULT_PAGE_SIZE = 20;
 
 	protected Paginator() {
 		this.pageSize = DEFAULT_PAGE_SIZE;
@@ -101,7 +107,8 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 		// set the current page
 		Scope.Params params = Scope.Params.current();
 		if (params != null) {
-			String page = (String) params.get("page");
+			String paramName = Play.configuration.getProperty("paginator.parameter.name", "page");
+			String page = (String) params.get(paramName);
 			if (page == null) {
 				setPageNumber(1);
 			} else {
@@ -115,15 +122,15 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 			this.viewParams = new HashMap<String,Object>();
 			this.viewParams.putAll(params.allSimple());
 		}
-	}
-
-	public Paginator(List<T> values) {
-		this(values, DEFAULT_PAGE_SIZE);
-		this.paginationStyle = PaginationStyle.BY_VALUE;
+		
+		// default view options
+		this.boundaryControlsEnabled = true;
+		this.rowCountSummaryEnabled = false;
+		this.pagesDisplayed = 5;
 	}
 
 	@SuppressWarnings("unchecked")
-	public Paginator(List<T> values, int pageSize) {
+	public Paginator(List<T> values) {
 		this();
 		this.values = values;
 		this.pageSize = pageSize;
@@ -132,32 +139,20 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 	}
 
 	public Paginator(Class<T> typeToken, List<K> keys) {
-		this(typeToken, keys, DEFAULT_PAGE_SIZE);
-		this.paginationStyle = PaginationStyle.BY_KEY;
-	}
-
-	public Paginator(Class<T> typeToken, List<K> keys, int pageSize) {
 		this();
 		if (keys == null)
 			throw new NullPointerException("Keys must not be null");
 		this.typeToken = typeToken;
 		this.index = keys;
-		this.pageSize = pageSize;
 		this.rowCount = index.size();
 		this.paginationStyle = PaginationStyle.BY_KEY;
 	}
 
 	public Paginator(Class<T> typeToken, int rowCount) {
-		this(typeToken, rowCount, DEFAULT_PAGE_SIZE);
-		this.paginationStyle = PaginationStyle.BY_CALLBACK;
-	}
-	
-	public Paginator(Class<T> typeToken, int rowCount, int pageSize) {
 		this();
 		this.paginationStyle = PaginationStyle.BY_CALLBACK;
 		this.rowCount = rowCount;
 		this.typeToken = typeToken;
-		this.pageSize = pageSize;
 	}
 
 	protected abstract KeyedRecordLocator<K, T> getKeyedRecordLocator();
@@ -209,6 +204,11 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 
 	public int getPageSize() {
 		return pageSize;
+	}
+	
+	public Paginator<K,T> setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+		return this;
 	}
 
 	public int getRowCount() {
@@ -286,6 +286,33 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 		if (getHasNextPage()) {
 			setPageNumber(getPageNumber() + 1);
 		}
+	}
+
+	public boolean isBoundaryControlsEnabled() {
+		return boundaryControlsEnabled;
+	}
+
+	public Paginator<K,T> setBoundaryControlsEnabled(boolean showBoundaryControls) {
+		this.boundaryControlsEnabled = showBoundaryControls;
+		return this;
+	}
+
+	public boolean isRowCountSummaryEnabled() {
+		return rowCountSummaryEnabled;
+	}
+
+	public Paginator<K,T> setRowCountSummaryEnabled(boolean rowCountSummaryEnabled) {
+		this.rowCountSummaryEnabled = rowCountSummaryEnabled;
+		return this;
+	}
+
+	public int getPagesDisplayed() {
+		return pagesDisplayed;
+	}
+
+	public Paginator<K,T> setPagesDisplayed(int pagesDisplayed) {
+		this.pagesDisplayed = pagesDisplayed;
+		return this;
 	}
 
 	protected int getPagesLoaded() {

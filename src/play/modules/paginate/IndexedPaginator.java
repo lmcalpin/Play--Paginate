@@ -25,11 +25,7 @@ public class IndexedPaginator<K,V> extends Paginator<K, V> {
 	private IndexedRecordLocator<K, V> locator;
 	
 	public IndexedPaginator(IndexedRecordLocator<K, V> locator, Class<V> typeToken, List<K> keys) {
-		this(locator, typeToken, keys, DEFAULT_PAGE_SIZE);
-	}
-
-	public IndexedPaginator(IndexedRecordLocator<K, V> locator, Class<V> typeToken, List<K> keys, int pageSize) {
-		super(typeToken, keys, pageSize);
+		super(typeToken, keys);
 		this.locator = locator;
 	}
 

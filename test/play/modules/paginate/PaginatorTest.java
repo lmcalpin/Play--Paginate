@@ -20,7 +20,8 @@ public class PaginatorTest {
 			mm.testValue = String.valueOf(i+1);
 			models.add(mm);
 		}
-		ValuePaginator<MockModel> paginator = new ValuePaginator<MockModel>(models, 4);
+		ValuePaginator<MockModel> paginator = new ValuePaginator<MockModel>(models);
+		paginator.setPageSize(4);
 		List<MockModel> page1 = (List<MockModel>) paginator.getCurrentPage();
 		Assert.assertEquals(4, page1.size());
 		Assert.assertFalse(paginator.getHasPreviousPage());
@@ -39,7 +40,8 @@ public class PaginatorTest {
 			models.put(mm.testKey, mm);
 			keys.add(mm.testKey);
 		}
-		MappedPaginator<String,MockModel> paginator = new MappedPaginator<String,MockModel>(new MappedKeyedRecordLocator<String,MockModel>(models), MockModel.class, keys, 4);
+		MappedPaginator<String,MockModel> paginator = new MappedPaginator<String,MockModel>(new MappedKeyedRecordLocator<String,MockModel>(models), MockModel.class, keys);
+		paginator.setPageSize(4);
 		List<MockModel> page1 = (List<MockModel>) paginator.getCurrentPage();
 		Assert.assertEquals(4, page1.size());
 		for (MockModel model : models.values()) {
@@ -55,7 +57,8 @@ public class PaginatorTest {
 			mm.testValue = String.valueOf(i+1);
 			models.add(mm);
 		}
-		ValuePaginator<MockModel> paginator = new ValuePaginator<MockModel>(models, 100);
+		ValuePaginator<MockModel> paginator = new ValuePaginator<MockModel>(models);
+		paginator.setPageSize(100);
 		Assert.assertEquals(1, paginator.getPageCount());
 		Assert.assertFalse(paginator.getHasPreviousPage());
 		Assert.assertFalse(paginator.getHasNextPage());
@@ -70,7 +73,8 @@ public class PaginatorTest {
 			mm.testValue = String.valueOf(i+1);
 			models.add(mm);
 		}
-		ValuePaginator<MockModel> paginator = new ValuePaginator<MockModel>(models, 51);
+		ValuePaginator<MockModel> paginator = new ValuePaginator<MockModel>(models);
+		paginator.setPageSize(51);
 		Assert.assertEquals(2, paginator.getPageCount());
 		Assert.assertFalse(paginator.getHasPreviousPage());
 		Assert.assertTrue(paginator.getHasNextPage());

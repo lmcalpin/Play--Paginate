@@ -1,13 +1,15 @@
 %{
 int __firstPage = 1;
 int __currentPage = _items.pageNumber;
-if (__currentPage > 3) {
-	__firstPage = __currentPage - 2;
-}
+int __pagesDisplayed = _items.pagesDisplayed;
+int __pagesBeforeMiddle = __pagesDisplayed / 2;
 int __maxPage = _items.pageCount;
-int __lastPage = __currentPage + 2;
-if (__currentPage < 3) {
-	__lastPage = 5;
+if (__currentPage > (__pagesDisplayed / 2)) {
+	__firstPage = __currentPage - __pagesBeforeMiddle;
+}
+int __lastPage = __currentPage + (__pagesDisplayed - __pagesBeforeMiddle - 1);
+if (__currentPage < (__pagesDisplayed - __pagesBeforeMiddle)) {
+	__lastPage = __pagesDisplayed;
 }
 if (__lastPage > __maxPage) {
 	__lastPage = __maxPage;
@@ -21,7 +23,9 @@ String __lastURL = __hasNext ? _items.getCallbackURL(__maxPage) : "#";
 %}
 <div class="pagination-container">
 	<ul class="pagination">
+%{ if (_items.boundaryControlsEnabled) { %}	
 		<li class="${__currentPage == 1 ? 'off' : 'first'}"><a href="${__firstURL}">&laquo; First</a></li>
+%{ } %}
 		<li class="${__hasPrev ? 'previous' : 'off'}"><a href="${__prevURL}">&lsaquo; Previous</a></li>
 %{
 for (__idx = __firstPage; __idx <= __lastPage; __idx++) {
@@ -32,8 +36,12 @@ boolean __active = __currentPage == __idx;
 }
 %}
 		<li class="${__hasNext ? 'next' : 'off'}"><a href="${__nextURL}">Next &rsaquo;</a></li>
+%{ if (_items.boundaryControlsEnabled) { %}	
 		<li class="${__currentPage == __maxPage ? 'off' : 'first'}"><a href="${__lastURL}">Last &raquo;</a></li>
+%{ } %}
 	</ul>
 	<br style="clear:both;"/>
-	<span class="summary">Displaying rows ${_items.firstRowIndex + 1} to ${_items.lastRowIndex + 1} out of ${_items.rowCount} entries</span>
+%{ if (_items.rowCountSummaryEnabled) { %}
+	#{include 'paginate/RowCountSummary.html' /}	
+%{ } %}
 </div>

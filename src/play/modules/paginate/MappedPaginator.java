@@ -25,11 +25,7 @@ public class MappedPaginator<K,V> extends Paginator<K, V> {
 	private KeyedRecordLocator<K, V> locator;
 	
 	public MappedPaginator(KeyedRecordLocator<K, V> locator, Class<V> typeToken, List<K> keys) {
-		this(locator, typeToken, keys, DEFAULT_PAGE_SIZE);
-	}
-
-	public MappedPaginator(KeyedRecordLocator<K, V> locator, Class<V> typeToken, List<K> keys, int pageSize) {
-		super(typeToken, keys, pageSize);
+		super(typeToken, keys);
 		this.locator = locator;
 	}
 

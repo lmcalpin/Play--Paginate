@@ -31,10 +31,6 @@ public class ValuePaginator<V> extends Paginator<Object, V> implements
 		super(values);
 	}
 
-	public ValuePaginator(List<V> values, int pageSize) {
-		super(values, pageSize);
-	}
-
 	protected ValuePaginator() {}
 	
 	// unused

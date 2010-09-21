@@ -32,10 +32,6 @@ public class ModelPaginator<T extends Model> extends Paginator<Long, T> implemen
 	private transient KeyedRecordLocator<Long, T> keyedRecordLocator;
 	private transient IndexedRecordLocator<Long, T> indexedRecordLocator;
 	
-	public ModelPaginator(Class<T> typeToken, List<Long> keys, int pageSize) {
-		super(typeToken, keys, pageSize);
-	}
-
 	public ModelPaginator(Class<T> typeToken, List<Long> keys) {
 		super(typeToken, keys);
 	}
@@ -46,10 +42,6 @@ public class ModelPaginator<T extends Model> extends Paginator<Long, T> implemen
 
 	public ModelPaginator(Class<T> typeToken, long rowCount) {
 		super(typeToken, (int)rowCount);
-	}
-
-	public ModelPaginator(Class<T> typeToken, long rowCount, int pageSize) {
-		super(typeToken, (int)rowCount, pageSize);
 	}
 
 	protected ModelPaginator() {}
