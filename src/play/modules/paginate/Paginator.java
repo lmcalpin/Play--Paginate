@@ -59,6 +59,8 @@ import play.mvc.Scope;
  * @param <T>
  */
 public abstract class Paginator<K, T> implements List<T>, Serializable {
+	private static final String DEFAULT_PAGE_PARAM = "page";
+
 	private static final long serialVersionUID = -2064492602195638937L;
 
 	private enum PaginationStyle { BY_VALUE, BY_KEY, BY_CALLBACK };
@@ -79,8 +81,9 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 	
 	private PaginationStyle paginationStyle;
 
-	private String action;
-	private Map<String, Object> viewParams;
+	private final String action;
+	private final String paramName;
+	private final Map<String, Object> viewParams;
 	
 	// control options
 	private boolean boundaryControlsEnabled;
@@ -102,12 +105,15 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 		Request request = Request.current();
 		if (request != null) {
 			this.action = request.action;
+		} else {
+			this.action = null;
 		}
 
 		// set the current page
 		Scope.Params params = Scope.Params.current();
+		this.viewParams = new HashMap<String,Object>();
 		if (params != null) {
-			String paramName = Play.configuration.getProperty("paginator.parameter.name", "page");
+			this.paramName = Play.configuration.getProperty("paginator.parameter.name", DEFAULT_PAGE_PARAM);
 			String page = (String) params.get(paramName);
 			if (page == null) {
 				setPageNumber(1);
@@ -119,8 +125,9 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 					Logger.warn(t, "Error parsing page: %s", page);
 				}
 			}
-			this.viewParams = new HashMap<String,Object>();
 			this.viewParams.putAll(params.allSimple());
+		} else {
+			this.paramName = DEFAULT_PAGE_PARAM;
 		}
 		
 		// default view options
@@ -164,7 +171,7 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 	protected abstract IndexedRecordLocator<K, T> getIndexedRecordLocator();
 	
 	public String getCallbackURL(int page) {
-		viewParams.put("page", String.valueOf(page));
+		viewParams.put(paramName, String.valueOf(page));
 		return Router.reverse(action, viewParams).url;
 	}
 
