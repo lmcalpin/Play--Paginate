@@ -41,11 +41,19 @@ public class JPAPaginator<K, T extends Model> extends Paginator<K, T> implements
 	}
 
 	public JPAPaginator(Class<T> typeToken, long rowCount) {
-		super(typeToken, (int)rowCount);
+		this(typeToken, (int)rowCount);
 	}
 
 	public JPAPaginator(Class<T> typeToken, long rowCount, IndexedRecordLocator<K, T> locator) {
-		super(typeToken, (int)rowCount);
+		this(typeToken, (int)rowCount, locator);
+	}
+
+	public JPAPaginator(Class<T> typeToken, int rowCount) {
+		super(typeToken, rowCount);
+	}
+
+	public JPAPaginator(Class<T> typeToken, int rowCount, IndexedRecordLocator<K, T> locator) {
+		super(typeToken, rowCount);
 		this.indexedRecordLocator = locator;
 	}
 

@@ -98,9 +98,6 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 		this.pageNumber = 0;
 		this.paginationStyle = PaginationStyle.BY_VALUE;
 		
-		// capture view parameters from Play!
-		//this.viewParams = LocalVariablesNamesTracer.getLocalVariables();
-		
 		// capture controller and action that created this Paginator
 		Request request = Request.current();
 		if (request != null) {
@@ -136,11 +133,9 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 		this.pagesDisplayed = 5;
 	}
 
-	@SuppressWarnings("unchecked")
 	public Paginator(List<T> values) {
 		this();
 		this.values = values;
-		this.pageSize = pageSize;
 		this.rowCount = values.size();
 		this.paginationStyle = PaginationStyle.BY_VALUE;
 	}
@@ -230,8 +225,18 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 		this.rowCount = rowCount;
 	}
 
+	/**
+	 * @return the current page number (1-based)
+	 */
 	public int getPageNumber() {
 		return pageNumber + 1;
+	}
+
+	/**
+	 * @param pageNumber the 1-based index of the page we are currently viewing
+	 */
+	public void setPageNumber(int pageNumber) {
+		this.pageNumber = pageNumber - 1;
 	}
 
 	public int getPageCount() {
@@ -253,10 +258,6 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 
 	public boolean getHasNextPage() {
 		return pageNumber < (getPageCount() - 1);
-	}
-
-	public void setPageNumber(int pageNumber) {
-		this.pageNumber = pageNumber - 1;
 	}
 
 	/**

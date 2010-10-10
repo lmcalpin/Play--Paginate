@@ -26,6 +26,14 @@ import javax.persistence.Query;
 import play.db.jpa.JPA;
 import play.modules.paginate.IndexedRecordLocator;
 
+/**
+ * Locates a List of JPA-based entities, optionally filtering the results.
+ *   
+ * @author Lawrence
+ *
+ * @param <K>
+ * @param <Model>
+ */
 public class JPAIndexedRecordLocator<K,Model> implements IndexedRecordLocator<K,Model>, Serializable {
 	private static final long serialVersionUID = 1847759900112779643L;
 	
@@ -43,8 +51,9 @@ public class JPAIndexedRecordLocator<K,Model> implements IndexedRecordLocator<K,
 		this.params = params;
 	}
 	
+	@Override
 	public int count() {
-		return ((Long)query("SELECT COUNT(*)").getSingleResult()).intValue();
+		return ((Long)query("COUNT(*)").getSingleResult()).intValue();
 	}
 	
 	@Override
@@ -54,9 +63,12 @@ public class JPAIndexedRecordLocator<K,Model> implements IndexedRecordLocator<K,
 		return returnMe;
 	}
 
+	private static final String SELECT = "SELECT ";
 	private Query query(String select) {
 		StringBuilder hql = new StringBuilder();
 		if (select != null) {
+			if (!select.regionMatches(true, 0, SELECT, 0, SELECT.length()))
+				hql.append("SELECT ");
 			hql.append(select);
 			hql.append(' ');
 		}
