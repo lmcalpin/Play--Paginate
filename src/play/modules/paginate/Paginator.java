@@ -82,7 +82,7 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 	private PaginationStyle paginationStyle;
 
 	private final String action;
-	private final String paramName;
+	private String paramName;
 	private final Map<String, Object> viewParams;
 	
 	// control options
@@ -110,18 +110,7 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 		Scope.Params params = Scope.Params.current();
 		this.viewParams = new HashMap<String,Object>();
 		if (params != null) {
-			this.paramName = Play.configuration.getProperty("paginator.parameter.name", DEFAULT_PAGE_PARAM);
-			String page = (String) params.get(paramName);
-			if (page == null) {
-				setPageNumber(1);
-			} else {
-				try {
-					int pageNumber = Integer.parseInt(page);
-					setPageNumber(pageNumber);
-				} catch (Throwable t) {
-					Logger.warn(t, "Error parsing page: %s", page);
-				}
-			}
+			setParameterName(Play.configuration.getProperty("paginator.parameter.name", DEFAULT_PAGE_PARAM));
 			this.viewParams.putAll(params.allSimple());
 		} else {
 			this.paramName = DEFAULT_PAGE_PARAM;
@@ -223,6 +212,15 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 
 	protected void setRowCount(int rowCount) {
 		this.rowCount = rowCount;
+	}
+
+	public String getParameterName() {
+		return paramName;
+	}
+
+	public void setParameterName(String paramName) {
+		this.paramName = paramName;
+		parsePageParameter();
 	}
 
 	/**
@@ -500,5 +498,20 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 	public <T> T[] toArray(T[] arg0) {
 		throw new UnsupportedOperationException(
 				"PaginatingLists can not be transformed into arrays.");
+	}
+	
+	private void parsePageParameter() {
+		Scope.Params params = Scope.Params.current();
+		String page = (String) params.get(paramName);
+		if (page == null) {
+			setPageNumber(1);
+		} else {
+			try {
+				int pageNumber = Integer.parseInt(page);
+				setPageNumber(pageNumber);
+			} catch (Throwable t) {
+				Logger.warn(t, "Error parsing page: %s", page);
+			}
+		}
 	}
 }

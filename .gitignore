@@ -7,3 +7,4 @@ eclipse
 .svn
 *.pyc
 module.bat
+.settings

@@ -42,17 +42,14 @@ bc. <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/style
 
 h2. Customization
 
-By default, a request parameter "page" is used to determine which page is being viewed in a paginated list.  If
-you would rather use an alternate name, you can customize this in your **conf/application.conf** file.
+By default, a request parameter "page" is used to determine which page is being viewed in a paginated list.  If you would rather use an alternate name, you can customize this in your **conf/application.conf** file.
 
 bc. paginator.parameter.name=__page
 
-In addition, the Paginator classes expose properties that you can use to determine how many items are displayed
-per page, as well as how the controls will be displayed.  
+In addition, the Paginator classes expose properties that you can use to determine how many items are displayed per page, as well as how the controls will be displayed.  
 
 - get/setBoundaryControlsEnabled: determines whether the First and Last buttons are displayed
 - get/setPagesDisplayed: customizes the number of pages that show up between the forward/backward controls
 - get/setPageSize: determines the number of rows we display per page
-- get/setRowCountSummaryEnabled: determines whether the row count summary view template is displayed.  By 
-default, this area displays the message: "Displaying rows X to Y out of Z records."
+- get/setRowCountSummaryEnabled: determines whether the row count summary view template is displayed.  By default, this area displays the message: "Displaying rows X to Y out of Z records."
  
