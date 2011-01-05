@@ -24,9 +24,9 @@ String __lastURL = __hasNext ? _items.getCallbackURL(__maxPage) : "#";
 <div class="pagination-container">
 	<ul class="pagination">
 %{ if (_items.boundaryControlsEnabled) { %}	
-		<li class="${__currentPage == 1 ? 'off' : 'first'}"><a href="${__firstURL}">&laquo; First</a></li>
+		<li class="${__currentPage == 1 ? 'off' : 'first'}"><a href="${__firstURL}">&{'Play--Paginate.frst'}</a></li>
 %{ } %}
-		<li class="${__hasPrev ? 'previous' : 'off'}"><a href="${__prevURL}">&lsaquo; Previous</a></li>
+		<li class="${__hasPrev ? 'previous' : 'off'}"><a href="${__prevURL}">&{'Play--Paginate.prev'}</a></li>
 %{
 for (__idx = __firstPage; __idx <= __lastPage; __idx++) {
 boolean __active = __currentPage == __idx;
@@ -35,9 +35,9 @@ boolean __active = __currentPage == __idx;
 %{
 }
 %}
-		<li class="${__hasNext ? 'next' : 'off'}"><a href="${__nextURL}">Next &rsaquo;</a></li>
+		<li class="${__hasNext ? 'next' : 'off'}"><a href="${__nextURL}">&{'Play--Paginate.next'}</a></li>
 %{ if (_items.boundaryControlsEnabled) { %}	
-		<li class="${__currentPage == __maxPage ? 'off' : 'first'}"><a href="${__lastURL}">Last &raquo;</a></li>
+		<li class="${__currentPage == __maxPage ? 'off' : 'first'}"><a href="${__lastURL}">&{'Play--Paginate.last'}</a></li>
 %{ } %}
 	</ul>
 	<br style="clear:both;"/>
