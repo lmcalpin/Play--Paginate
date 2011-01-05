@@ -3,3 +3,8 @@
 # For exemple, for french create a messages.fr file
 
 #play-paginate.name=play-paginate
+
+play-paginate.frst=&laquo;&nbsp;First
+play-paginate.prev=&lsaquo;&nbsp;Previous
+play-paginate.next=Next&nbsp;&rsaquo;
+play-paginate.last=Last&nbsp;&raquo;
