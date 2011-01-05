@@ -24,7 +24,7 @@ String __lastURL = __hasNext ? _items.getCallbackURL(__maxPage) : "#";
 <div class="pagination-container">
 	<ul class="pagination">
 %{ if (_items.boundaryControlsEnabled) { %}	
-		<li class="${__currentPage == 1 ? 'off' : 'first'}"><a href="${__firstURL}">&{'play-paginate.frst'}</a></li>
+		<li class="${__currentPage == 1 ? 'off' : 'first'}"><a href="${__firstURL}">&{'play-paginate.first'}</a></li>
 %{ } %}
 		<li class="${__hasPrev ? 'previous' : 'off'}"><a href="${__prevURL}">&{'play-paginate.prev'}</a></li>
 %{

@@ -8,3 +8,4 @@ eclipse
 *.pyc
 module.bat
 .settings
+build.bat
