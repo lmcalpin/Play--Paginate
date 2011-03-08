@@ -39,6 +39,10 @@ If you would like to use the default stylesheet, include this somewhere in your 
 
 bc. <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/stylesheets/play-pagination.css'}"> 
 
+If you would like to include a summary "Displaying rows X to Y", you may include the 
+summary tag:
+
+bc. #{paginate.summary items:paginator/}
 
 h2. Customization
 
@@ -51,5 +55,4 @@ In addition, the Paginator classes expose properties that you can use to determi
 - get/setBoundaryControlsEnabled: determines whether the First and Last buttons are displayed
 - get/setPagesDisplayed: customizes the number of pages that show up between the forward/backward controls
 - get/setPageSize: determines the number of rows we display per page
-- get/setRowCountSummaryEnabled: determines whether the row count summary view template is displayed.  By default, this area displays the message: "Displaying rows X to Y out of Z records."
- 
+

@@ -40,8 +40,5 @@ boolean __active = __currentPage == __idx;
 		<li class="${__currentPage == __maxPage ? 'off' : 'first'}"><a href="${__lastURL}">&{'play-paginate.last'}</a></li>
 %{ } %}
 	</ul>
-%{ if (_items.rowCountSummaryEnabled) { %}	
-    <br style="clear:both;"/>
-	#{include 'paginate/RowCountSummary.html' /}
-%{ } %}
 </div>
+<br style="clear:both;"/>

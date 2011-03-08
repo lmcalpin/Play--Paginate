@@ -87,7 +87,8 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 	
 	// control options
 	private boolean boundaryControlsEnabled;
-	private boolean rowCountSummaryEnabled;
+	// replaced with summary tag
+//	private boolean rowCountSummaryEnabled;
 	private int pagesDisplayed;
 
 	private static final int DEFAULT_PAGE_SIZE = 20;
@@ -118,7 +119,7 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 		
 		// default view options
 		this.boundaryControlsEnabled = true;
-		this.rowCountSummaryEnabled = false;
+//		this.rowCountSummaryEnabled = false;
 		this.pagesDisplayed = 5;
 	}
 
@@ -311,14 +312,14 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 		return this;
 	}
 
-	public boolean isRowCountSummaryEnabled() {
-		return rowCountSummaryEnabled;
-	}
-
-	public Paginator<K,T> setRowCountSummaryEnabled(boolean rowCountSummaryEnabled) {
-		this.rowCountSummaryEnabled = rowCountSummaryEnabled;
-		return this;
-	}
+//	public boolean isRowCountSummaryEnabled() {
+//		return rowCountSummaryEnabled;
+//	}
+//
+//	public Paginator<K,T> setRowCountSummaryEnabled(boolean rowCountSummaryEnabled) {
+//		this.rowCountSummaryEnabled = rowCountSummaryEnabled;
+//		return this;
+//	}
 
 	public int getPagesDisplayed() {
 		return pagesDisplayed;
