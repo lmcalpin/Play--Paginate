@@ -35,19 +35,21 @@ render(entities);
  
 Pagination controls are controlled by the view paginate/Controls.html and can be overridden in your project.
 
-If the row count summary option is enabled, you can also customize paginate/RowCountSummary.html to customize
-the footer (which, by default, displays the message: "Displaying rows X to Y out of Z records.").
-
 The following properties are available to customize pagination display:
 
 - get/setBoundaryControlsEnabled: determines whether the First and Last buttons are displayed
 - get/setPagesDisplayed: customizes the number of pages that show up between the forward/backward controls
 - get/setPageSize: determines the number of rows we display per page
-- get/setRowCountSummaryEnabled: determines whether the row count summary view template is displayed.  By 
-default, this area displays the message: "Displaying rows X to Y out of Z records."
  
 By default, paginator uses the "page" request parameter to determine what page you are viewing.  If you would
 like to override that, you can add a "paginator.parameter.name" entry to your application.conf:
 
 paginator.parameter.name=__pagenumber
+
+*Row Count Summary*
+
+An additional summary tag is available if you would like to display the message: "Displaying rows X to Y 
+out of Z records."
+
+#{paginate.summary items:paginator /}
 
