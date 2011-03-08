@@ -1,0 +1,9 @@
+play-paginate.first=&laquo;&nbsp;Premier
+play-paginate.prev=&lsaquo;&nbsp;Précédent
+play-paginate.next=Suivant&nbsp;&rsaquo;
+play-paginate.last=Dernier&nbsp;&raquo;
+
+play-paginate.summary.display=Affichage des lignes 
+play-paginate.summary.to=à
+play-paginate.summary.from=de
+play-paginate.summary.entries=entrées

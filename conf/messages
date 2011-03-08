@@ -8,3 +8,9 @@ play-paginate.first=&laquo;&nbsp;First
 play-paginate.prev=&lsaquo;&nbsp;Previous
 play-paginate.next=Next&nbsp;&rsaquo;
 play-paginate.last=Last&nbsp;&raquo;
+
+play-paginate.summary.display=Displaying rows
+play-paginate.summary.to=to
+play-paginate.summary.from=out of
+play-paginate.summary.entries=entries
+
