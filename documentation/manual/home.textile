@@ -30,10 +30,10 @@ bc. public static void index() {
 
 From your view, include the pagination list and controls:
 
-bc. #{paginate.list items:records, as:'r'} 
+bc. #{paginate.list items:paginator, as:'r'} 
     ... ${r} // or whatever 
     #{/paginate.list} 
-    #{paginate.controls items:records /} 
+    #{paginate.controls items:paginator /} 
 
 If you would like to use the default stylesheet, include this somewhere in your layout:
 
