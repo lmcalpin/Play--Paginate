@@ -40,8 +40,8 @@ public class ModelPaginator<T extends Model> extends JPAPaginator<Long, T> {
 		super(typeToken, rowCount, locator);
 	}
 
-	public ModelPaginator(Class<T> typeToken, String filter, Object... params) {
-		super(typeToken, filter, params);
+	public ModelPaginator(Class<T> typeToken, String orderBy, String filter, Object... params) {
+		super(typeToken, orderBy, filter, params);
 	}
 
 	public ModelPaginator(Class<T> typeToken, long rowCount) {
@@ -79,6 +79,6 @@ public class ModelPaginator<T extends Model> extends JPAPaginator<Long, T> {
 			throw new RuntimeException(e);
 		}
 		return count.longValue();
-		
+
 	}
 }
