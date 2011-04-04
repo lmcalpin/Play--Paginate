@@ -28,61 +28,82 @@ import play.modules.paginate.IndexedRecordLocator;
 
 /**
  * Locates a List of JPA-based entities, optionally filtering the results.
- *   
+ * 
  * @author Lawrence
- *
+ * 
  * @param <K>
  * @param <Model>
  */
-public class JPAIndexedRecordLocator<K,Model> implements IndexedRecordLocator<K,Model>, Serializable {
-	private static final long serialVersionUID = 1847759900112779643L;
-	
-	private final Class<Model> typeToken;
-	private final String filter;
-	private final Object[] params;
-	
-	public JPAIndexedRecordLocator(Class<Model> typeToken) {
-		this(typeToken, null);
-	}
-	
-	public JPAIndexedRecordLocator(Class<Model> typeToken, String filter, Object... params) {
-		this.typeToken = typeToken;
-		this.filter = filter;
-		this.params = params;
-	}
-	
-	@Override
-	public int count() {
-		return ((Long)query("COUNT(*)").getSingleResult()).intValue();
-	}
-	
-	@Override
-	public List<Model> findByIndex(int firstResult, int pageSize) {
-		@SuppressWarnings("unchecked")
-		List<Model> returnMe = query(null).setFirstResult(firstResult).setMaxResults(pageSize).getResultList();
-		return returnMe;
-	}
+public class JPAIndexedRecordLocator<K, Model> implements IndexedRecordLocator<K, Model>, Serializable {
+    private static final long serialVersionUID = 1847759900112779643L;
 
-	private static final String SELECT = "SELECT ";
-	private Query query(String select) {
-		StringBuilder hql = new StringBuilder();
-		if (select != null) {
-			if (!select.regionMatches(true, 0, SELECT, 0, SELECT.length()))
-				hql.append("SELECT ");
-			hql.append(select);
-			hql.append(' ');
-		}
-		hql.append("FROM " + typeToken.getSimpleName());
-		if (filter != null) {
-			hql.append(" WHERE " + filter);
-		}
-		
-		Query query = JPA.em().createQuery(hql.toString());
-		if (params != null) {
-			for (int i = 0; i < params.length; i++) {
-				query.setParameter(i+1, params[i]);
-			}
-		}
-		return query;
-	}
+    private final Class<Model> typeToken;
+    private final String filter;
+    private String orderBy;
+    private final Object[] params;
+
+    public JPAIndexedRecordLocator(Class<Model> typeToken) {
+        this(typeToken, null);
+    }
+
+    public JPAIndexedRecordLocator(Class<Model> typeToken, String filter, Object... params) {
+        this.typeToken = typeToken;
+        this.filter = filter;
+        this.params = params;
+    }
+
+    public Class<Model> getModel() {
+        return typeToken;
+    }
+    
+    @Override
+    public int count() {
+        return ((Long) query("COUNT(*)", false).getSingleResult()).intValue();
+    }
+
+    /**
+     * Specifies order by clause for JPAQL query.
+     * @param orderBy
+     * @return
+     */
+    public JPAIndexedRecordLocator setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
+        return this;
+    }
+    
+    @Override
+    public List<Model> findByIndex(int firstResult, int pageSize) {
+        @SuppressWarnings("unchecked")
+        List<Model> returnMe = query(null, true).setFirstResult(firstResult).setMaxResults(pageSize).getResultList();
+        return returnMe;
+    }
+
+    private static final String SELECT = "SELECT ";
+
+    private Query query(String select, boolean applyFilters) {
+        StringBuilder hql = new StringBuilder();
+        if (select != null) {
+            if (!select.regionMatches(true, 0, SELECT, 0, SELECT.length()))
+                hql.append("SELECT ");
+            hql.append(select);
+            hql.append(' ');
+        }
+        hql.append("FROM " + typeToken.getSimpleName());
+        if (applyFilters) {
+            if (filter != null) {
+                hql.append(" WHERE " + filter);
+            }
+            if (orderBy != null) {
+                hql.append(" ORDER BY " + orderBy);
+            }
+        }
+
+        Query query = JPA.em().createQuery(hql.toString());
+        if (applyFilters && params != null) {
+            for (int i = 0; i < params.length; i++) {
+                query.setParameter(i + 1, params[i]);
+            }
+        }
+        return query;
+    }
 }
