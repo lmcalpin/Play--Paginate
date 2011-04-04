@@ -1,6 +1,6 @@
 = Play--Paginate
 
-Adds two new tags:
+The Paginate module adds two new tags:
 
   #{paginate.list items:var, as:'ref'/}, which works as a drop-in replacement for #{list/} to show one page at a time
   
@@ -16,27 +16,57 @@ if you want to use the default stylesheet.
 
 == Using Paginator from your Controllers
 
-The paginator can be used in one of three ways:
+The paginator can be used several ways:
 
-1) You can wrap the entire result set.  This is useful if the entire List is in memory already.
+1) You can wrap a raw List.  Your controller can simply create a List:
+
+  List<Foo> values = ...;
+  render(values);
+  
+The view will simply refer to that List:
+
+  #{paginate.list items:values, as:'row'/}
+  
+Behind the scenes, the control will autobox the raw List into a ValuePaginator helper class.
+  
+2) You can manually wrap the List with our ValuePaginator helper class.
 
   List<Foo> values = ...;
   ValuePaginator entites = new ValuePaginator(values);
   render(entities);
 
-2) You can wrap the keys.  Paginator will lazily lookup the pages as they are rendered.
+3) You can wrap the keys.  Using our ModelPaginator helper class, we will lazily lookup only the rows for the current page that is being rendered.
 
   List<Long> keys = ... "SELECT id FROM Foo" ... ;
   ModelPaginator entities = new ModelPaginator(Foo.class, keys);
   render(entities);
 
-3) You can supply a Play! Model and optionally a filter and let the Paginator figure out the rest.
+4) You can supply a Play! Model and optionally a filter and let the ModelPaginator helper class figure out the rest.
 
   ModelPaginator entities = new ModelPaginator(Foo.class, "foo=?", "bar");
   render(entities);
 
-== Customization
+== Using Paginator from your Views
+
+You will display a page from a collection by including the following tags:
  
+  #{paginate.list items:values, as:'r'}
+    ${r} <!-- displays the value for each row -->
+  #{/paginate.list}
+  
+The tag will insert special variables into the template that you can reference if you want to determine which row number is being displayed, 
+and the parity of the row.  The variables append "_index", "_parity", "_isFirst", and "_isLast" to the field name specified in the "as" 
+parameter.
+
+For example, in the tag above, the row variable is called "r", and the following variables will be available.
+
+  ${r_index} displays the row number (starting from 1)
+  ${r_isFirst} is true for row #1 and false elsewhere
+  ${r_isLast} is true for the last row in the Collection
+  ${r_parity} returns "even" for even-numbered rows and "odd" for odd-numbered rows 
+
+== Customization
+
 Pagination controls are controlled by the view paginate/Controls.html and can be overridden in your project.
 
 The following properties are available to customize pagination display:
@@ -48,7 +78,19 @@ The following properties are available to customize pagination display:
 By default, paginator uses the "page" request parameter to determine what page you are viewing.  If you would
 like to override that, you can add a "paginator.parameter.name" entry to your application.conf:
 
-paginator.parameter.name=__pagenumber
+  paginator.parameter.name=__pagenumber
+
+However, using the default page request parameter will paginate every single pagination control on the page.
+To avoid that, you need to invoke the setParameterName() method in your controller.
+
+  ModelPaginator entities = new ModelPaginator(...);
+  entities.setParameterName("foo");
+  render(entities);
+  
+The example above will use the request parameter "foo" to capture the current page number for the ModelPaginator
+associated with the variable named "entities."
+
+There is currently no way to change the parameter name used for Lists that are autoboxed into ValuePaginators.
 
 == Row Count Summary
 

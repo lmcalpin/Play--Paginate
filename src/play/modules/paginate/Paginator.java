@@ -69,20 +69,16 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
 
     protected Class<T> typeToken;
 
+    // TODO: should refactor this to use a Strategy pattern - not all of these
+    // fields are needed for each pagination strategy.
     private List<K> index;
-
     private int pageSize;
-
     private int rowCount;
-
     private Map<Long, List<T>> pages;
-
     private List<T> values;
-
-    private int pageNumber;
-
     private PaginationStyle paginationStyle;
 
+    private int pageNumber;
     private final String action;
     private String paramName;
     private final Map<String, Object> viewParams;
@@ -311,16 +307,6 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
         this.boundaryControlsEnabled = showBoundaryControls;
         return this;
     }
-
-    // public boolean isRowCountSummaryEnabled() {
-    // return rowCountSummaryEnabled;
-    // }
-    //
-    // public Paginator<K,T> setRowCountSummaryEnabled(boolean
-    // rowCountSummaryEnabled) {
-    // this.rowCountSummaryEnabled = rowCountSummaryEnabled;
-    // return this;
-    // }
 
     public int getPagesDisplayed() {
         return pagesDisplayed;

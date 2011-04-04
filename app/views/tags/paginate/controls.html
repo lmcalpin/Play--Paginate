@@ -1,5 +1,9 @@
 %{
 if (_items != null) {
+  // wrap raw Lists with the Paginator class
+  if (_items instanceof List && !(_items instanceof play.modules.paginate.Paginator)) {
+    _items = new play.modules.paginate.ValuePaginator(_items); 
+  }
 }%
 	#{include 'paginate/Controls.html'/}
 %{

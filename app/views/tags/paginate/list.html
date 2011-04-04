@@ -1,12 +1,16 @@
 %{
 if (_items != null) {
+  // wrap raw Lists with the Paginator class
+  if (_items instanceof List && !(_items instanceof play.modules.paginate.Paginator)) {
+    _items = new play.modules.paginate.ValuePaginator(_items); 
+  }
   idx = _items.firstRowIndex + 1;
 	for (_r in _items.currentPage) {
 	  layoutData = nil;
 	  if (play.version.startsWith("1.0")) {
 	    layoutData = play.templates.Template.layoutData.get(); 
 	  } else { // play 1.1 (and hopefully later?)
-      layoutData = play.templates.BaseTemplate.layoutData.get(); 
+        layoutData = play.templates.BaseTemplate.layoutData.get(); 
 	  }
     layoutData.put(_as, _r);
     layoutData.put(_as+'_index', idx);
