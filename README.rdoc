@@ -1,0 +1,59 @@
+= Play--Paginate
+
+Adds two new tags:
+
+  #{paginate.list items:var, as:'ref'/}, which works as a drop-in replacement for #{list/} to show one page at a time
+  
+and
+
+  #{paginate.controls items:var /} to display the pagination controls
+
+Also, add
+
+  <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/stylesheets/play-pagination.css'}">
+  
+if you want to use the default stylesheet.
+
+== Using Paginator from your Controllers
+
+The paginator can be used in one of three ways:
+
+1) You can wrap the entire result set.  This is useful if the entire List is in memory already.
+
+  List<Foo> values = ...;
+  ValuePaginator entites = new ValuePaginator(values);
+  render(entities);
+
+2) You can wrap the keys.  Paginator will lazily lookup the pages as they are rendered.
+
+  List<Long> keys = ... "SELECT id FROM Foo" ... ;
+  ModelPaginator entities = new ModelPaginator(Foo.class, keys);
+  render(entities);
+
+3) You can supply a Play! Model and optionally a filter and let the Paginator figure out the rest.
+
+  ModelPaginator entities = new ModelPaginator(Foo.class, "foo=?", "bar");
+  render(entities);
+
+== Customization
+ 
+Pagination controls are controlled by the view paginate/Controls.html and can be overridden in your project.
+
+The following properties are available to customize pagination display:
+
+- get/setBoundaryControlsEnabled: determines whether the First and Last buttons are displayed
+- get/setPagesDisplayed: customizes the number of pages that show up between the forward/backward controls
+- get/setPageSize: determines the number of rows we display per page
+ 
+By default, paginator uses the "page" request parameter to determine what page you are viewing.  If you would
+like to override that, you can add a "paginator.parameter.name" entry to your application.conf:
+
+paginator.parameter.name=__pagenumber
+
+== Row Count Summary
+
+An additional summary tag is available if you would like to display the message: "Displaying rows X to Y 
+out of Z records."
+
+  #{paginate.summary items:paginator /}
+

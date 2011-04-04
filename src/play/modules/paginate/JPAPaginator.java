@@ -25,65 +25,65 @@ import play.db.jpa.Model;
 import play.modules.paginate.locator.JPAIndexedRecordLocator;
 import play.modules.paginate.locator.JPAKeyedRecordLocator;
 
-public class JPAPaginator<K, T extends Model> extends Paginator<K, T> implements
-		Serializable {
-	private static final long serialVersionUID = -2064492602195638937L;
+public class JPAPaginator<K, T extends Model> extends Paginator<K, T> implements Serializable {
+    private static final long serialVersionUID = -2064492602195638937L;
 
-	private KeyedRecordLocator<K, T> keyedRecordLocator;
-	private IndexedRecordLocator<K, T> indexedRecordLocator;
-	
-	public JPAPaginator(Class<T> typeToken, List<K> keys) {
-		super(typeToken, keys);
-	}
+    private KeyedRecordLocator<K, T> keyedRecordLocator;
+    private IndexedRecordLocator<K, T> indexedRecordLocator;
 
-	public JPAPaginator(List<T> values) {
-		super(values);
-	}
+    public JPAPaginator(Class<T> typeToken, List<K> keys) {
+        super(typeToken, keys);
+    }
 
-	public JPAPaginator(Class<T> typeToken, long rowCount) {
-		this(typeToken, (int)rowCount);
-	}
+    public JPAPaginator(List<T> values) {
+        super(values);
+    }
 
-	public JPAPaginator(Class<T> typeToken, long rowCount, IndexedRecordLocator<K, T> locator) {
-		this(typeToken, (int)rowCount, locator);
-	}
+    public JPAPaginator(Class<T> typeToken, long rowCount) {
+        this(typeToken, (int) rowCount);
+    }
 
-	public JPAPaginator(Class<T> typeToken, int rowCount) {
-		super(typeToken, rowCount);
-	}
+    public JPAPaginator(Class<T> typeToken, long rowCount, IndexedRecordLocator<K, T> locator) {
+        this(typeToken, (int) rowCount, locator);
+    }
 
-	public JPAPaginator(Class<T> typeToken, int rowCount, IndexedRecordLocator<K, T> locator) {
-		super(typeToken, rowCount);
-		this.indexedRecordLocator = locator;
-	}
+    public JPAPaginator(Class<T> typeToken, int rowCount) {
+        super(typeToken, rowCount);
+    }
 
-	public JPAPaginator(Class<T> typeToken, String filter, Object... params) {
-		super(typeToken);
-		this.indexedRecordLocator = new JPAIndexedRecordLocator<K, T>(typeToken, filter, params);
-		this.setRowCount(indexedRecordLocator.count());
-	}
+    public JPAPaginator(Class<T> typeToken, int rowCount, IndexedRecordLocator<K, T> locator) {
+        super(typeToken, rowCount);
+        this.indexedRecordLocator = locator;
+    }
 
-	protected JPAPaginator() {}
-	
-	@Override
-	protected KeyedRecordLocator<K, T> getKeyedRecordLocator() {
-		if (typeToken == null)
-			throw new IllegalStateException(
-					"Record locators are only used when the list paginates over keys; a type token is required");
-		if (keyedRecordLocator == null) {
-			keyedRecordLocator = new JPAKeyedRecordLocator<K, T>(typeToken);
-		}
-		return keyedRecordLocator;
-	}
+    public JPAPaginator(Class<T> typeToken, String filter, Object... params) {
+        super(typeToken);
+        this.indexedRecordLocator = new JPAIndexedRecordLocator<K, T>(typeToken, filter, params);
+        this.setRowCount(indexedRecordLocator.count());
+    }
 
-	@Override
-	protected IndexedRecordLocator<K, T> getIndexedRecordLocator() {
-		if (typeToken == null)
-			throw new IllegalStateException(
-					"Record locators are only used when the list paginates over keys; a type token is required");
-		if (indexedRecordLocator == null) {
-			indexedRecordLocator = new JPAIndexedRecordLocator<K, T>(typeToken);
-		}
-		return indexedRecordLocator;
-	}
+    protected JPAPaginator() {
+    }
+
+    @Override
+    protected KeyedRecordLocator<K, T> getKeyedRecordLocator() {
+        if (typeToken == null)
+            throw new IllegalStateException(
+                    "Record locators are only used when the list paginates over keys; a type token is required");
+        if (keyedRecordLocator == null) {
+            keyedRecordLocator = new JPAKeyedRecordLocator<K, T>(typeToken);
+        }
+        return keyedRecordLocator;
+    }
+
+    @Override
+    protected IndexedRecordLocator<K, T> getIndexedRecordLocator() {
+        if (typeToken == null)
+            throw new IllegalStateException(
+                    "Record locators are only used when the list paginates over keys; a type token is required");
+        if (indexedRecordLocator == null) {
+            indexedRecordLocator = new JPAIndexedRecordLocator<K, T>(typeToken);
+        }
+        return indexedRecordLocator;
+    }
 }
