@@ -1,7 +1,10 @@
 package play.modules.paginate;
 
+import javax.persistence.Entity;
+
 import play.db.jpa.Model;
 
+@Entity
 public class MockModel extends Model {
 	private static final long serialVersionUID = 1L;
 	public String testKey;

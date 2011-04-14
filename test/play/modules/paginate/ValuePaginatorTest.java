@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import play.modules.paginate.locator.MappedKeyedRecordLocator;
 
-public class PaginatorTest {
+public class ValuePaginatorTest {
     @Test
     public void testPaginateByValue() {
         List<MockModel> models = new ArrayList<MockModel>();
@@ -26,27 +26,6 @@ public class PaginatorTest {
         Assert.assertFalse(paginator.getHasPreviousPage());
         Assert.assertTrue(paginator.getHasNextPage());
         Assert.assertEquals(25, paginator.getPageCount());
-    }
-
-    @Test
-    public void testPaginateByKey() {
-        Map<String, MockModel> models = new HashMap<String, MockModel>();
-        List<String> keys = new ArrayList<String>();
-        for (int i = 0; i < 4; i++) {
-            MockModel mm = new MockModel();
-            mm.testKey = String.valueOf(i + 1);
-            mm.testValue = "value " + String.valueOf(i + 1);
-            models.put(mm.testKey, mm);
-            keys.add(mm.testKey);
-        }
-        MappedPaginator<String, MockModel> paginator = new MappedPaginator<String, MockModel>(
-                new MappedKeyedRecordLocator<String, MockModel>(models), MockModel.class, keys);
-        paginator.setPageSize(4);
-        List<MockModel> page1 = (List<MockModel>) paginator.getCurrentPage();
-        Assert.assertEquals(4, page1.size());
-        for (MockModel model : models.values()) {
-            Assert.assertTrue(keys.contains(model.testKey));
-        }
     }
 
     @Test

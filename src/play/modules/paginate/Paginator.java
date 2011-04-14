@@ -114,6 +114,7 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
         } else {
             this.paramName = DEFAULT_PAGE_PARAM;
         }
+        this.viewParams.remove("body");
 
         // default view options
         this.boundaryControlsEnabled = true;

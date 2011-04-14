@@ -36,10 +36,12 @@ public class ModelPaginator<T extends Model> extends JPAPaginator<Long, T> {
         super(typeToken, keys);
     }
 
+    @Deprecated
     public ModelPaginator(Class<T> typeToken, long rowCount, IndexedRecordLocator<Long, T> locator) {
         super(typeToken, rowCount, locator);
     }
 
+    @Deprecated
     public ModelPaginator(Class<T> typeToken, String filter, Object... params) {
         super(typeToken, filter, params);
     }
@@ -52,10 +54,12 @@ public class ModelPaginator<T extends Model> extends JPAPaginator<Long, T> {
         super(values);
     }
 
+    @Deprecated
     public ModelPaginator(Class<T> typeToken, IndexedRecordLocator<Long, T> locator) {
         this(typeToken, locator.count(), locator);
     }
 
+    @Deprecated
     public ModelPaginator(JPAIndexedRecordLocator<Long, T> locator) {
         this(locator.getModel(), locator.count(), locator);
     }

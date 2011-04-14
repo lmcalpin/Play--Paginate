@@ -80,7 +80,7 @@ public class JPAIndexedRecordLocator<K, Model> implements IndexedRecordLocator<K
 
     private static final String SELECT = "SELECT ";
 
-    private Query query(String select, boolean applyFilters) {
+    private Query query(String select, boolean applyOrderBy) {
         StringBuilder hql = new StringBuilder();
         if (select != null) {
             if (!select.regionMatches(true, 0, SELECT, 0, SELECT.length()))
@@ -89,17 +89,17 @@ public class JPAIndexedRecordLocator<K, Model> implements IndexedRecordLocator<K
             hql.append(' ');
         }
         hql.append("FROM " + typeToken.getSimpleName());
-        if (applyFilters) {
-            if (filter != null) {
-                hql.append(" WHERE " + filter);
-            }
+        if (filter != null) {
+            hql.append(" WHERE " + filter);
+        }
+        if (applyOrderBy) {
             if (orderBy != null) {
                 hql.append(" ORDER BY " + orderBy);
             }
         }
 
         Query query = JPA.em().createQuery(hql.toString());
-        if (applyFilters && params != null) {
+        if (params != null) {
             for (int i = 0; i < params.length; i++) {
                 query.setParameter(i + 1, params[i]);
             }
