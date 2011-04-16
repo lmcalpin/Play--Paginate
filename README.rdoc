@@ -45,6 +45,12 @@ Behind the scenes, the control will autobox the raw List into a ValuePaginator h
 
   ModelPaginator entities = new ModelPaginator(Foo.class, "foo=?", "bar");
   render(entities);
+  
+If you want to do sorting as well, you can use a custom record locator
+strategy.  One meant for JPA records is provided, called JPAIndexedRecordLocator.
+
+  ModelPaginator entities = new ModelPaginator(new JPAIndexedRecordLocator(Foo.class, "foo=?", "bar").orderBy("ID DESC"));
+  render(entities);
 
 == Using Paginator from your Views
 
