@@ -39,6 +39,7 @@ public class JPAPaginator<K, T extends Model> extends Paginator<K, T> implements
         super(values);
     }
 
+    @Deprecated
     public JPAPaginator(Class<T> typeToken, long rowCount) {
         this(typeToken, (int) rowCount);
     }
@@ -51,6 +52,7 @@ public class JPAPaginator<K, T extends Model> extends Paginator<K, T> implements
         this(typeToken, (int) rowCount, locator);
     }
 
+    @Deprecated
     public JPAPaginator(Class<T> typeToken, int rowCount) {
         super(typeToken, rowCount);
     }
@@ -69,10 +71,15 @@ public class JPAPaginator<K, T extends Model> extends Paginator<K, T> implements
         this.indexedRecordLocator = locator;
     }
     
+    public JPAPaginator(JPAIndexedRecordLocator<K, T> locator) {
+        super(locator.getModel(), locator.count());
+        this.indexedRecordLocator = locator;
+    }
+    
     /**
-     * Use JPAPaginator(typeToken, indexedRecordLocator) instead
+     * Convenience method that creates a JPAIndexedRecordLocator with a
+     * where clause filter.
      */
-    @Deprecated
     public JPAPaginator(Class<T> typeToken, String filter, Object... params) {
         super(typeToken);
         this.indexedRecordLocator = new JPAIndexedRecordLocator<K, T>(typeToken, filter, params);
