@@ -55,19 +55,17 @@ public class ModelPaginator<T extends Model> extends JPAPaginator<Long, T> {
         super(values);
     }
 
-    @Deprecated
     public ModelPaginator(Class<T> typeToken, IndexedRecordLocator<Long, T> locator) {
-        this(typeToken, locator.count(), locator);
+        super(typeToken, locator);
     }
 
-    @SuppressWarnings("deprecation")
     public ModelPaginator(JPAIndexedRecordLocator<Long, T> locator) {
-        this(locator.getModel(), locator.count(), locator);
+        super(locator);
     }
 
     @SuppressWarnings("deprecation")
     public ModelPaginator(Class<T> typeToken) {
-        this(typeToken, count(typeToken));
+        super(typeToken, count(typeToken));
     }
 
     private static <T extends Model> long count(Class<T> typeToken) {
