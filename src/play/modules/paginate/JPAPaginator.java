@@ -35,42 +35,6 @@ public class JPAPaginator<K, T extends Model> extends Paginator<K, T> implements
         super(typeToken, keys);
     }
 
-    public JPAPaginator(List<T> values) {
-        super(values);
-    }
-
-    @Deprecated
-    public JPAPaginator(Class<T> typeToken, long rowCount) {
-        this(typeToken, (int) rowCount);
-    }
-
-    /**
-     * Use JPAPaginator(typeToken, indexedRecordLocator) instead
-     */
-    @Deprecated
-    public JPAPaginator(Class<T> typeToken, long rowCount, IndexedRecordLocator<K, T> locator) {
-        this(typeToken, (int) rowCount, locator);
-    }
-
-    @Deprecated
-    public JPAPaginator(Class<T> typeToken, int rowCount) {
-        super(typeToken, rowCount);
-    }
-
-    /**
-     * Use JPAPaginator(typeToken, indexedRecordLocator) instead
-     */
-    @Deprecated
-    public JPAPaginator(Class<T> typeToken, int rowCount, IndexedRecordLocator<K, T> locator) {
-        super(typeToken, rowCount);
-        this.indexedRecordLocator = locator;
-    }
-
-    public JPAPaginator(Class<T> typeToken, IndexedRecordLocator<K, T> locator) {
-        super(typeToken, locator.count());
-        this.indexedRecordLocator = locator;
-    }
-
     public JPAPaginator(JPAIndexedRecordLocator<K, T> locator) {
         super(locator.getModel(), locator.count());
         this.indexedRecordLocator = locator;
@@ -109,5 +73,9 @@ public class JPAPaginator<K, T extends Model> extends Paginator<K, T> implements
             indexedRecordLocator = new JPAIndexedRecordLocator<K, T>(typeToken);
         }
         return indexedRecordLocator;
+    }
+    
+    public void orderBy(String orderByClause) {
+        ((JPAIndexedRecordLocator)getIndexedRecordLocator()).setOrderBy(orderByClause);
     }
 }

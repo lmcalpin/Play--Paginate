@@ -26,11 +26,19 @@ public class ModelPaginatorTest extends UnitTest {
     }
 
     @Test
-    public void testOrderByDescending() {
+    public void testOrderByDescendingWithJPAIndexedRecordLocator() {
         ModelPaginator<MockModel> paginator = new ModelPaginator(
                 new JPAIndexedRecordLocator(MockModel.class).setOrderBy("ID DESC"));
         Assert.assertEquals("15", paginator.get(0).testValue);
         Assert.assertEquals("1", paginator.get(14).testValue);
+    }
+    
+    @Test
+    public void testOrderByDescending() {
+        ModelPaginator<MockModel> paginator2 = new ModelPaginator(MockModel.class);
+        paginator2.orderBy("ID DESC");
+        Assert.assertEquals("15", paginator2.get(0).testValue);
+        Assert.assertEquals("1", paginator2.get(14).testValue);
     }
 
     @Test
