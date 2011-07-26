@@ -5,6 +5,7 @@ if (_items != null) {
     _items = new play.modules.paginate.ValuePaginator(_items); 
   }
   idx = _items.firstRowIndex + 1;
+  rowCount = _items.rowCount;  
 	for (_r in _items.currentPage) {
 	  layoutData = nil;
 	  if (play.version.startsWith("1.0")) {
@@ -14,7 +15,7 @@ if (_items != null) {
 	  }
       layoutData.put(_as, _r);
       layoutData.put(_as+'_index', idx);
-      layoutData.put(_as+'_isLast', idx == _items.rowCount);
+      layoutData.put(_as+'_isLast', idx == rowCount);
       layoutData.put(_as+'_isFirst', idx == 1);
       layoutData.put(_as+'_parity', idx % 2 == 0 ? 'even' : 'odd');
       idx++;

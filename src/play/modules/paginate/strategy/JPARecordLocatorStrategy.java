@@ -83,14 +83,6 @@ public class JPARecordLocatorStrategy<K, T extends Model> implements RecordLocat
         return pageValues;
     }
     
-//    public List<T> findByKey(List<K> input) {
-//        Session session = (Session) JPA.em().getDelegate();
-//        Criteria criteria = session.createCriteria(getModel());
-//        @SuppressWarnings("unchecked")
-//        List<T> returnMe = criteria.add(Restrictions.in("id", input)).addOrder(Order.asc("id")).list();
-//        return returnMe;
-//    }
-    
     private List<T> findByIndex(int firstRowIdx, int lastRowIdx) {
         int pageSize = lastRowIdx - firstRowIdx;
         @SuppressWarnings("unchecked")
