@@ -22,60 +22,29 @@ import java.io.Serializable;
 import java.util.List;
 
 import play.db.jpa.Model;
-import play.modules.paginate.locator.JPAIndexedRecordLocator;
-import play.modules.paginate.locator.JPAKeyedRecordLocator;
+import play.modules.paginate.strategy.JPARecordLocatorStrategy;
 
 public class JPAPaginator<K, T extends Model> extends Paginator<K, T> implements Serializable {
     private static final long serialVersionUID = -2064492602195638937L;
 
-    private KeyedRecordLocator<K, T> keyedRecordLocator;
-    private IndexedRecordLocator<K, T> indexedRecordLocator;
-
     public JPAPaginator(Class<T> typeToken, List<K> keys) {
-        super(typeToken, keys);
+        super(new JPARecordLocatorStrategy(typeToken, keys));
     }
 
-    public JPAPaginator(JPAIndexedRecordLocator<K, T> locator) {
-        super(locator.getModel(), locator.count());
-        this.indexedRecordLocator = locator;
+    public JPAPaginator(Class<T> typeToken) {
+        super(new JPARecordLocatorStrategy(typeToken));
     }
 
-    /**
-     * Convenience method that creates a JPAIndexedRecordLocator with a where
-     * clause filter.
-     */
     public JPAPaginator(Class<T> typeToken, String filter, Object... params) {
-        super(typeToken);
-        this.indexedRecordLocator = new JPAIndexedRecordLocator<K, T>(typeToken, filter, params);
-        this.setRowCount(indexedRecordLocator.count());
+        super(new JPARecordLocatorStrategy(typeToken, filter, params));
     }
 
-    protected JPAPaginator() {
+    public JPAPaginator<K,T> orderBy(String orderByClause) {
+        jpaStrategy().setOrderBy(orderByClause);
+        return this;
     }
 
-    @Override
-    protected KeyedRecordLocator<K, T> getKeyedRecordLocator() {
-        if (typeToken == null)
-            throw new IllegalStateException(
-                    "Record locators are only used when the list paginates over keys; a type token is required");
-        if (keyedRecordLocator == null) {
-            keyedRecordLocator = new JPAKeyedRecordLocator<K, T>(typeToken);
-        }
-        return keyedRecordLocator;
-    }
-
-    @Override
-    protected IndexedRecordLocator<K, T> getIndexedRecordLocator() {
-        if (typeToken == null)
-            throw new IllegalStateException(
-                    "Record locators are only used when the list paginates over keys; a type token is required");
-        if (indexedRecordLocator == null) {
-            indexedRecordLocator = new JPAIndexedRecordLocator<K, T>(typeToken);
-        }
-        return indexedRecordLocator;
-    }
-    
-    public void orderBy(String orderByClause) {
-        ((JPAIndexedRecordLocator)getIndexedRecordLocator()).setOrderBy(orderByClause);
+    protected JPARecordLocatorStrategy jpaStrategy() {
+        return (JPARecordLocatorStrategy)getRecordLocatorStrategy();
     }
 }

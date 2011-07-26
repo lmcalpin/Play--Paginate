@@ -18,16 +18,17 @@
  */
 package play.modules.paginate;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 
 import play.db.jpa.Model;
-import play.modules.paginate.locator.JPAIndexedRecordLocator;
 
 public class ModelPaginator<T extends Model> extends JPAPaginator<Long, T> {
     private static final long serialVersionUID = -2064492602195638937L;
 
+    public ModelPaginator(Class<T> typeToken) {
+        super(typeToken);
+    }
+    
     public ModelPaginator(Class<T> typeToken, List<Long> keys) {
         super(typeToken, keys);
     }
@@ -35,12 +36,10 @@ public class ModelPaginator<T extends Model> extends JPAPaginator<Long, T> {
     public ModelPaginator(Class<T> typeToken, String filter, Object... params) {
         super(typeToken, filter, params);
     }
-
-    public ModelPaginator(JPAIndexedRecordLocator<Long, T> locator) {
-        super(locator);
+    
+    public ModelPaginator<T> orderBy(String orderByClause) {
+        jpaStrategy().setOrderBy(orderByClause);
+        return this;
     }
 
-    public ModelPaginator(Class<T> typeToken) {
-        super(new JPAIndexedRecordLocator(typeToken));
-    }
 }
