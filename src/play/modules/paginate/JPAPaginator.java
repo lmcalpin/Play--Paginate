@@ -70,15 +70,15 @@ public class JPAPaginator<K, T extends Model> extends Paginator<K, T> implements
         super(typeToken, locator.count());
         this.indexedRecordLocator = locator;
     }
-    
+
     public JPAPaginator(JPAIndexedRecordLocator<K, T> locator) {
         super(locator.getModel(), locator.count());
         this.indexedRecordLocator = locator;
     }
-    
+
     /**
-     * Convenience method that creates a JPAIndexedRecordLocator with a
-     * where clause filter.
+     * Convenience method that creates a JPAIndexedRecordLocator with a where
+     * clause filter.
      */
     public JPAPaginator(Class<T> typeToken, String filter, Object... params) {
         super(typeToken);
@@ -88,7 +88,7 @@ public class JPAPaginator<K, T extends Model> extends Paginator<K, T> implements
 
     protected JPAPaginator() {
     }
-    
+
     @Override
     protected KeyedRecordLocator<K, T> getKeyedRecordLocator() {
         if (typeToken == null)

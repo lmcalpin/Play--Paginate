@@ -21,23 +21,24 @@ package play.modules.paginate;
 import java.util.List;
 
 public class ValuePaginator<V> extends Paginator<Object, V> {
-	private static final long serialVersionUID = -2064492602195638937L;
+    private static final long serialVersionUID = -2064492602195638937L;
 
-	public ValuePaginator(List<V> values) {
-		super(values);
-	}
+    public ValuePaginator(List<V> values) {
+        super(values);
+    }
 
-	protected ValuePaginator() {}
-	
-	// unused
-	@Override
-	protected KeyedRecordLocator<Object, V> getKeyedRecordLocator() {
-		return null;
-	}
+    protected ValuePaginator() {
+    }
 
-	// unused
-	@Override
-	protected IndexedRecordLocator<Object, V> getIndexedRecordLocator() {
-		return null;
-	}
+    // unused
+    @Override
+    protected KeyedRecordLocator<Object, V> getKeyedRecordLocator() {
+        return null;
+    }
+
+    // unused
+    @Override
+    protected IndexedRecordLocator<Object, V> getIndexedRecordLocator() {
+        return null;
+    }
 }

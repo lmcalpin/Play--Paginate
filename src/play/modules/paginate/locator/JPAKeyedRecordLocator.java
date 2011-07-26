@@ -29,22 +29,22 @@ import org.hibernate.criterion.Restrictions;
 import play.db.jpa.JPA;
 import play.modules.paginate.KeyedRecordLocator;
 
-public class JPAKeyedRecordLocator<K,Model> implements KeyedRecordLocator<K,Model>, Serializable {
-	private static final long serialVersionUID = -4079026940617050525L;
-	
-	private Class<Model> typeToken;
-	
-	public JPAKeyedRecordLocator(Class<Model> typeToken) {
-		this.typeToken = typeToken;
-	}
-	
-	@Override
-	public List<Model> findByKey(List<K> input) {
-		Session session = (Session)JPA.em().getDelegate();
-		Criteria criteria = session.createCriteria(typeToken);
-		@SuppressWarnings("unchecked")
-		List<Model> returnMe = criteria.add(Restrictions.in("id", input)).addOrder(Order.asc("id")).list();
-		return returnMe;
-	}
+public class JPAKeyedRecordLocator<K, Model> implements KeyedRecordLocator<K, Model>, Serializable {
+    private static final long serialVersionUID = -4079026940617050525L;
+
+    private Class<Model> typeToken;
+
+    public JPAKeyedRecordLocator(Class<Model> typeToken) {
+        this.typeToken = typeToken;
+    }
+
+    @Override
+    public List<Model> findByKey(List<K> input) {
+        Session session = (Session) JPA.em().getDelegate();
+        Criteria criteria = session.createCriteria(typeToken);
+        @SuppressWarnings("unchecked")
+        List<Model> returnMe = criteria.add(Restrictions.in("id", input)).addOrder(Order.asc("id")).list();
+        return returnMe;
+    }
 
 }

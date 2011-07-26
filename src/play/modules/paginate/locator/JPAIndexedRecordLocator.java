@@ -55,7 +55,7 @@ public class JPAIndexedRecordLocator<K, Model> implements IndexedRecordLocator<K
     public Class<Model> getModel() {
         return typeToken;
     }
-    
+
     @Override
     public int count() {
         return ((Long) query("COUNT(*)", false).getSingleResult()).intValue();
@@ -63,6 +63,7 @@ public class JPAIndexedRecordLocator<K, Model> implements IndexedRecordLocator<K
 
     /**
      * Specifies order by clause for JPAQL query.
+     * 
      * @param orderBy
      * @return
      */
@@ -70,7 +71,7 @@ public class JPAIndexedRecordLocator<K, Model> implements IndexedRecordLocator<K
         this.orderBy = orderBy;
         return this;
     }
-    
+
     @Override
     public List<Model> findByIndex(int firstResult, int pageSize) {
         @SuppressWarnings("unchecked")

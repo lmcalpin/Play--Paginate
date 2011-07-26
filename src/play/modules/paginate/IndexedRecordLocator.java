@@ -21,6 +21,7 @@ package play.modules.paginate;
 import java.util.List;
 
 public interface IndexedRecordLocator<K, T> {
-	public abstract int count();
-	public abstract List<T> findByIndex(int startRowIndex, int pageSize);
+    public abstract int count();
+
+    public abstract List<T> findByIndex(int startRowIndex, int pageSize);
 }
