@@ -18,6 +18,7 @@
  */
 package play.modules.paginate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import play.modules.paginate.strategy.ByValueRecordLocatorStrategy;
@@ -25,6 +26,10 @@ import play.modules.paginate.strategy.ByValueRecordLocatorStrategy;
 public class ValuePaginator<T> extends Paginator<Object, T> {
     private static final long serialVersionUID = -2064492602195638937L;
 
+    protected ValuePaginator() {
+        this(new ArrayList<T>());
+    }
+    
     public ValuePaginator(List<T> values) {
         super(new ByValueRecordLocatorStrategy<T>(values));
     }

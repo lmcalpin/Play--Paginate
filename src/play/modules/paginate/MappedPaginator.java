@@ -18,7 +18,7 @@
  */
 package play.modules.paginate;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import play.modules.paginate.strategy.ByKeyRecordLocatorStrategy;
@@ -26,6 +26,10 @@ import play.modules.paginate.strategy.ByKeyRecordLocatorStrategy;
 public class MappedPaginator<K, T> extends Paginator<K, T> {
     private static final long serialVersionUID = 9009784743373942624L;
 
+    protected MappedPaginator() {
+        this(new HashMap<K,T>());
+    }
+    
     public MappedPaginator(Map<K, T> map) {
         super(new ByKeyRecordLocatorStrategy<K, T>(map));
     }

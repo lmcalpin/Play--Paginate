@@ -8,8 +8,6 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import play.modules.paginate.locator.MappedKeyedRecordLocator;
-
 public class MappedPaginatorTest {
     @Test
     public void testPaginateByKey() {
@@ -22,8 +20,7 @@ public class MappedPaginatorTest {
             models.put(mm.testKey, mm);
             keys.add(mm.testKey);
         }
-        MappedPaginator<String, MockModel> paginator = new MappedPaginator<String, MockModel>(
-                new MappedKeyedRecordLocator<String, MockModel>(models), MockModel.class, keys);
+        MappedPaginator<String, MockModel> paginator = new MappedPaginator<String, MockModel>(models);
         paginator.setPageSize(4);
         List<MockModel> page1 = (List<MockModel>) paginator.getCurrentPage();
         Assert.assertEquals(4, page1.size());
