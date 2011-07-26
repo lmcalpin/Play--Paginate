@@ -20,12 +20,24 @@ bc. public static void index() {
       render(paginator);
     }
 
+You can also provide a JPA-QL WHERE clause and/or an ORDER clause to sort and filter the results.
+
+bc. ModelPaginator entities = new ModelPaginator(Foo.class, "foo=?", "bar").orderBy("ID DESC"));
+    render(entities);
+
 **play.modules.paginate.ValuePaginator ** is used to wrap any existing List.
 
 bc. public static void index() {
       List<T> realList = ...;
       ValuePaginator paginator = new ValuePaginator(realList);
       render(paginator);
+    }
+
+You can also simply provide a standard Java Collections API List, and behind the scenes, it will be autoboxed into a ValuePaginator.
+
+bc. public static void index() {
+      List<T> realList = ...;
+      render(realList);
     }
 
 From your view, include the pagination list and controls:
@@ -56,3 +68,14 @@ In addition, the Paginator classes expose properties that you can use to determi
 - get/setPagesDisplayed: customizes the number of pages that show up between the forward/backward controls
 - get/setPageSize: determines the number of rows we display per page
 
+However, using the default page request parameter will paginate every single pagination control on the page.
+To avoid that, you need to invoke the setParameterName() method in your controller.
+
+bc. ModelPaginator entities = new ModelPaginator(...);
+    entities.setParameterName("foo");
+    render(entities);
+  
+The example above will use the request parameter "foo" to capture the current page number for the ModelPaginator
+associated with the variable named "entities."
+
+There is currently no way to change the parameter name used for Lists that are autoboxed into ValuePaginators.
