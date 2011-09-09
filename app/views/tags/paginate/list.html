@@ -6,22 +6,25 @@ if (_items != null) {
   }
   idx = _items.firstRowIndex + 1;
   rowCount = _items.rowCount;  
-	for (_r in _items.currentPage) {
-	  layoutData = nil;
-	  if (play.version.startsWith("1.0")) {
-	    layoutData = play.templates.Template.layoutData.get(); 
-	  } else { // play 1.1 (and hopefully later?)
+  for (_r in _items.currentPage) {
+    layoutData = nil;
+    if (play.version.startsWith("1.0")) {
+        layoutData = play.templates.Template.layoutData.get(); 
+    } else { // play 1.1 (and hopefully later?)
         layoutData = play.templates.BaseTemplate.layoutData.get(); 
-	  }
-      layoutData.put(_as, _r);
-      layoutData.put(_as+'_index', idx);
-      layoutData.put(_as+'_isLast', idx == rowCount);
-      layoutData.put(_as+'_isFirst', idx == 1);
-      layoutData.put(_as+'_parity', idx % 2 == 0 ? 'even' : 'odd');
-      idx++;
+    }
+    layoutData.put(_as, _r);
+    layoutData.put(_as+'_index', idx);
+    layoutData.put(_as+'_isLast', idx == rowCount);
+    layoutData.put(_as+'_isFirst', idx == 1);
+    layoutData.put(_as+'_parity', idx % 2 == 0 ? 'even' : 'odd');
+    idx++;
 %}
-	  #{doBody/}
+	#{doBody/}
 %{
-	}
+  }
+  if (rowCount == 0) {
+    play.templates.TagContext.parent().data.put('_executeNextElse', true);
+  }
 }
 %}
