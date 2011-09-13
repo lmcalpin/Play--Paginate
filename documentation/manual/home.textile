@@ -56,6 +56,16 @@ summary tag:
 
 bc. #{paginate.summary items:paginator/}
 
+You can use the standard Play! #{else} tag with #{paginate.list}.  
+The contents within this tag will be rendered if the collection is empty:
+
+bc. #{paginate.list items:emptyCollection, as:'doesntmatter'}
+      This content won't be displayed
+    #{/paginate.list}
+    #{else}
+      Empty list!
+    #{/else}
+  
 h2. Customization
 
 By default, a request parameter "page" is used to determine which page is being viewed in a paginated list.  If you would rather use an alternate name, you can customize this in your **conf/application.conf** file.

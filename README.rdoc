@@ -70,6 +70,15 @@ For example, in the tag above, the row variable is called "r", and the following
   ${r_isLast} is true for the last row in the Collection
   ${r_parity} returns "even" for even-numbered rows and "odd" for odd-numbered rows 
 
+You can also use the standard Play! #{else} tag.  The contents within this tag will be rendered if the collection is empty:
+
+  #{paginate.list items:emptyCollection, as:'doesntmatter'}
+    This content won't be displayed
+  #{/paginate.list}
+  #{else}
+    Empty list!
+  #{/else}
+  
 == Customization
 
 Pagination controls are controlled by the view paginate/Controls.html and can be overridden in your project.
