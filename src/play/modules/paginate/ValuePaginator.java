@@ -19,8 +19,11 @@
 package play.modules.paginate;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
+import play.modules.paginate.Paginator;
 import play.modules.paginate.strategy.ByValueRecordLocatorStrategy;
 
 public class ValuePaginator<T> extends Paginator<Object, T> {
@@ -31,6 +34,14 @@ public class ValuePaginator<T> extends Paginator<Object, T> {
     }
     
     public ValuePaginator(List<T> values) {
+        super(new ByValueRecordLocatorStrategy<T>(values));
+    }
+
+    public ValuePaginator(Map<?,T> values) {
+        super(new ByValueRecordLocatorStrategy<T>(values.values()));
+    }
+
+    public ValuePaginator(Collection<T> values) {
         super(new ByValueRecordLocatorStrategy<T>(values));
     }
 }

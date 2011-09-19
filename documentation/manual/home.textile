@@ -65,7 +65,7 @@ bc. #{paginate.list items:emptyCollection, as:'doesntmatter'}
     #{else}
       Empty list!
     #{/else}
-  
+
 h2. Customization
 
 By default, a request parameter "page" is used to determine which page is being viewed in a paginated list.  If you would rather use an alternate name, you can customize this in your **conf/application.conf** file.
@@ -79,12 +79,13 @@ In addition, the Paginator classes expose properties that you can use to determi
 - get/setPageSize: determines the number of rows we display per page
 
 However, using the default page request parameter will paginate every single pagination control on the page.
+
 To avoid that, you need to invoke the setParameterName() method in your controller.
 
 bc. ModelPaginator entities = new ModelPaginator(...);
     entities.setParameterName("foo");
     render(entities);
-  
+
 The example above will use the request parameter "foo" to capture the current page number for the ModelPaginator
 associated with the variable named "entities."
 

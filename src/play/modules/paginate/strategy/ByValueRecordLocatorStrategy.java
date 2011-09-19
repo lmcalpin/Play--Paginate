@@ -1,6 +1,7 @@
 package play.modules.paginate.strategy;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,6 +14,10 @@ public class ByValueRecordLocatorStrategy<T> implements RecordLocatorStrategy<T>
     
     public ByValueRecordLocatorStrategy(List<T> values) {
         this.values = values;
+    }
+
+    public ByValueRecordLocatorStrategy(Collection<T> values) {
+        this.values = new ArrayList(values);
     }
 
     @Override

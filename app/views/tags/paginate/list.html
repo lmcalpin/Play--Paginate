@@ -1,8 +1,10 @@
 %{
 if (_items != null) {
   // wrap raw Lists with the Paginator class
-  if (_items instanceof List && !(_items instanceof play.modules.paginate.Paginator)) {
-    _items = new play.modules.paginate.ValuePaginator(_items); 
+  if (!(_items instanceof play.modules.paginate.Paginator)) {
+    if (_items instanceof List || _items instanceof Set || _items instanceof Map) {
+        _items = new play.modules.paginate.ValuePaginator(_items);
+    } 
   }
   idx = _items.firstRowIndex + 1;
   rowCount = _items.rowCount;  
