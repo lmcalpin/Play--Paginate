@@ -26,6 +26,8 @@ public class ByKeyRecordLocatorStrategy<K, T> implements RecordLocatorStrategy<T
 
     @Override
     public List<T> fetchPage(int startRowIdx, int lastRowIdx) {
+        if (index == null || values == null || startRowIdx > lastRowIdx)
+            return Collections.emptyList();
         List<K> keys = index.subList(startRowIdx, lastRowIdx);
         return findByKey(keys);
     }

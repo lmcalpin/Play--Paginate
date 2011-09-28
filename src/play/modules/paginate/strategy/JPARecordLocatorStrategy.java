@@ -1,7 +1,7 @@
 package play.modules.paginate.strategy;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -10,26 +10,24 @@ import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
+import play.exceptions.UnexpectedException;
 
 public class JPARecordLocatorStrategy<K, T extends Model> implements RecordLocatorStrategy<T> {
     private String filter;
     private Object[] params;
     private String orderBy;
     private final Class<T> typeToken;
-    
+
     public JPARecordLocatorStrategy(Class<T> typeToken) {
         this.typeToken = typeToken;
     }
-    
+
     /**
      * Return the models that have the keys provided.
+     * 
      * @param typeToken
      * @param keys
      */
@@ -43,6 +41,7 @@ public class JPARecordLocatorStrategy<K, T extends Model> implements RecordLocat
 
     /**
      * Return the models that satisfy the provided where clause.
+     * 
      * @param typeToken
      * @param filter
      * @param params
@@ -52,7 +51,7 @@ public class JPARecordLocatorStrategy<K, T extends Model> implements RecordLocat
         this.filter = filter;
         this.params = params;
     }
-    
+
     public String getOrderBy() {
         return orderBy;
     }
@@ -69,7 +68,7 @@ public class JPARecordLocatorStrategy<K, T extends Model> implements RecordLocat
     public int count() {
         return ((Long) query("COUNT(*)", false).getSingleResult()).intValue();
     }
-    
+
     @Override
     public int indexOf(T t) {
         return -1;
@@ -85,14 +84,14 @@ public class JPARecordLocatorStrategy<K, T extends Model> implements RecordLocat
         List<T> pageValues = findByIndex(startRowIdx, lastRowIdx);
         return pageValues;
     }
-    
+
     private List<T> findByIndex(int firstRowIdx, int lastRowIdx) {
         int pageSize = lastRowIdx - firstRowIdx;
         @SuppressWarnings("unchecked")
         List<T> returnMe = query(null, true).setFirstResult(firstRowIdx).setMaxResults(pageSize).getResultList();
         return returnMe;
     }
-    
+
     private static final String SELECT = "SELECT ";
 
     protected Query query(String select, boolean applyOrderBy) {
@@ -103,7 +102,7 @@ public class JPARecordLocatorStrategy<K, T extends Model> implements RecordLocat
             hql.append(select);
             hql.append(' ');
         }
-        hql.append("FROM " + typeToken.getAnnotation(Entity.class).name());
+        hql.append("FROM " + getEntityName());
         if (filter != null) {
             hql.append(" WHERE " + filter);
         }
@@ -113,10 +112,37 @@ public class JPARecordLocatorStrategy<K, T extends Model> implements RecordLocat
             }
         }
         EntityManager em = JPA.em();
-        if ( typeToken.isAnnotationPresent(PersistenceUnit.class)) {
-    		String unitName= typeToken.getAnnotation(PersistenceUnit.class).name();
-    		em = JPA.getJPAConfig(unitName).getJPAContext().em();
-    	}
+        if (typeToken.isAnnotationPresent(PersistenceUnit.class)) {
+            String unitName = typeToken.getAnnotation(PersistenceUnit.class).name();
+            // play < 1.2.3 did not have built-in support for multiple databases...
+            // to ensure we are backwards compatible, we use reflection to load this API
+            // so this code still works for people using play <= 1.2.3
+            try {
+                Method getJPAConfigMethod = JPA.class.getMethod("getJPAConfig", String.class);
+                if (getJPAConfigMethod != null) {
+                    Object jpaConfig = getJPAConfigMethod.invoke(JPA.class, unitName);
+                    Method getJPAContextMethod = jpaConfig.getClass().getMethod("getJPAContext");
+                    Object jpaContext = getJPAContextMethod.invoke(jpaConfig);
+                    Method emMethod = jpaContext.getClass().getMethod("em");
+                    em = (EntityManager)emMethod.invoke(jpaContext);
+                }
+            } catch (SecurityException e) {
+                // checked exceptions are stupid
+                throw new UnexpectedException(e);
+            } catch (IllegalArgumentException e) {
+                // checked exceptions are stupid
+                throw new UnexpectedException(e);
+            } catch (NoSuchMethodException e) {
+                // checked exceptions are stupid
+                throw new UnexpectedException(e);
+            } catch (IllegalAccessException e) {
+                // checked exceptions are stupid
+                throw new UnexpectedException(e);
+            } catch (InvocationTargetException e) {
+                // checked exceptions are still stupid
+                throw new UnexpectedException(e);
+            }
+        }
         Query query = em.createQuery(hql.toString());
         if (params != null) {
             for (int i = 0; i < params.length; i++) {
@@ -125,5 +151,12 @@ public class JPARecordLocatorStrategy<K, T extends Model> implements RecordLocat
         }
         return query;
     }
+    
+    private String getEntityName() {
+        String entityName = typeToken.getAnnotation(Entity.class).name();
+        if (entityName.length() == 0) {
+            entityName = typeToken.getSimpleName();
+        }
+        return entityName;
+    }
 }
-

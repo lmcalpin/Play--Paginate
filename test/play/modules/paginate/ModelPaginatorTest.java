@@ -17,6 +17,9 @@ public class ModelPaginatorTest extends UnitTest {
                 MockModel model = new MockModel();
                 model.testValue = String.valueOf(i + 1);
                 model.save();
+                AltMockModel model2 = new AltMockModel();
+                model2.testValue = String.valueOf(i + 1);
+                model2.save();
             }
         }
     }
@@ -73,6 +76,13 @@ public class ModelPaginatorTest extends UnitTest {
         for (int i = 0; i < 14; i++) {
             Assert.assertFalse("13".equals(paginator.get(0).testValue));
         }
+    }
+
+    // let's make sure this still works when @Entity(name="...") has an alternate name declared
+    @Test
+    public void testModelsWithAlternateEntityNames() {
+        ModelPaginator paginator = new ModelPaginator(AltMockModel.class);
+        Assert.assertEquals(15, paginator.size());
     }
 
 }

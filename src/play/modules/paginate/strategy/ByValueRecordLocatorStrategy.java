@@ -22,7 +22,7 @@ public class ByValueRecordLocatorStrategy<T> implements RecordLocatorStrategy<T>
 
     @Override
     public List<T> fetchPage(int startRowIdx, int lastRowIdx) {
-        if (values == null)
+        if (values == null || startRowIdx > lastRowIdx)
             return Collections.emptyList();
         List<T> pageValues = values.subList(startRowIdx, lastRowIdx);
         return pageValues;
