@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
 
 import org.apache.commons.lang.StringUtils;
@@ -100,7 +103,7 @@ public class JPARecordLocatorStrategy<K, T extends Model> implements RecordLocat
             hql.append(select);
             hql.append(' ');
         }
-        hql.append("FROM " + typeToken.getSimpleName());
+        hql.append("FROM " + typeToken.getAnnotation(Entity.class).name());
         if (filter != null) {
             hql.append(" WHERE " + filter);
         }
@@ -109,7 +112,12 @@ public class JPARecordLocatorStrategy<K, T extends Model> implements RecordLocat
                 hql.append(" ORDER BY " + orderBy);
             }
         }
-        Query query = JPA.em().createQuery(hql.toString());
+        EntityManager em = JPA.em();
+        if ( typeToken.isAnnotationPresent(PersistenceUnit.class)) {
+    		String unitName= typeToken.getAnnotation(PersistenceUnit.class).name();
+    		em = JPA.getJPAConfig(unitName).getJPAContext().em();
+    	}
+        Query query = em.createQuery(hql.toString());
         if (params != null) {
             for (int i = 0; i < params.length; i++) {
                 query.setParameter(i + 1, params[i]);
@@ -118,3 +126,4 @@ public class JPARecordLocatorStrategy<K, T extends Model> implements RecordLocat
         return query;
     }
 }
+
