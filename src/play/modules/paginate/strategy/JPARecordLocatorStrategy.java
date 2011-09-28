@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.Entity;
 import javax.persistence.Query;
 
 import org.apache.commons.lang.StringUtils;
@@ -100,7 +101,7 @@ public class JPARecordLocatorStrategy<K, T extends Model> implements RecordLocat
             hql.append(select);
             hql.append(' ');
         }
-        hql.append("FROM " + typeToken.getSimpleName());
+        hql.append("FROM " + typeToken.getAnnotation(Entity.class).name());
         if (filter != null) {
             hql.append(" WHERE " + filter);
         }
