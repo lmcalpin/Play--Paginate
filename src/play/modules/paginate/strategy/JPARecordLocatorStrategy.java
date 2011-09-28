@@ -112,19 +112,17 @@ public class JPARecordLocatorStrategy<K, T extends Model> implements RecordLocat
             }
         }
         EntityManager em = JPA.em();
+        // Play! <= 1.2.3 did not have built-in support for multiple databases...
+        // To ensure we are backwards compatible, we use reflection to check that this
+        // API is available, so this code still works for people using Play! <= 1.2.3.
         if (typeToken.isAnnotationPresent(PersistenceUnit.class)) {
             String unitName = typeToken.getAnnotation(PersistenceUnit.class).name();
-            // play < 1.2.3 did not have built-in support for multiple databases...
-            // to ensure we are backwards compatible, we use reflection to load this API
-            // so this code still works for people using play <= 1.2.3
             try {
                 Method getJPAConfigMethod = JPA.class.getMethod("getJPAConfig", String.class);
+                // guard: only call this code if the user is using a version of Play! that 
+                // has the static getJPAConfig method on the JPA class (Play! <= 1.2.3 does not)
                 if (getJPAConfigMethod != null) {
-                    Object jpaConfig = getJPAConfigMethod.invoke(JPA.class, unitName);
-                    Method getJPAContextMethod = jpaConfig.getClass().getMethod("getJPAContext");
-                    Object jpaContext = getJPAContextMethod.invoke(jpaConfig);
-                    Method emMethod = jpaContext.getClass().getMethod("em");
-                    em = (EntityManager)emMethod.invoke(jpaContext);
+                    em = JPA.getJPAConfig(unitName).getJPAContext().em();
                 }
             } catch (SecurityException e) {
                 // checked exceptions are stupid
@@ -133,12 +131,6 @@ public class JPARecordLocatorStrategy<K, T extends Model> implements RecordLocat
                 // checked exceptions are stupid
                 throw new UnexpectedException(e);
             } catch (NoSuchMethodException e) {
-                // checked exceptions are stupid
-                throw new UnexpectedException(e);
-            } catch (IllegalAccessException e) {
-                // checked exceptions are stupid
-                throw new UnexpectedException(e);
-            } catch (InvocationTargetException e) {
                 // checked exceptions are still stupid
                 throw new UnexpectedException(e);
             }
