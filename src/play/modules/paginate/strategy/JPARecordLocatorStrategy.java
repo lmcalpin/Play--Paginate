@@ -122,7 +122,7 @@ public class JPARecordLocatorStrategy<K, T extends Model> implements RecordLocat
                 // guard: only call this code if the user is using a version of Play! that 
                 // has the static getJPAConfig method on the JPA class (Play! <= 1.2.3 does not)
                 if (getJPAConfigMethod != null) {
-                    //em = JPA.getJPAConfig(unitName).getJPAContext().em();
+                    em = JPA.getJPAConfig(unitName).getJPAContext().em();
                 }
             } catch (SecurityException e) {
                 // checked exceptions are stupid
