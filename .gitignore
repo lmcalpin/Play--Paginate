@@ -10,3 +10,5 @@ module.bat
 .settings
 build.bat
 test-result
+doc
+logs

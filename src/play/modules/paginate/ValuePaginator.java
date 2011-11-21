@@ -26,6 +26,13 @@ import java.util.Map;
 import play.modules.paginate.Paginator;
 import play.modules.paginate.strategy.ByValueRecordLocatorStrategy;
 
+/**
+ * This class allows you to paginate over a prepopulated Collection.
+ * 
+ * @author Lawrence McAlpin
+ *
+ * @param <T>
+ */
 public class ValuePaginator<T> extends Paginator<Object, T> {
     private static final long serialVersionUID = -2064492602195638937L;
 

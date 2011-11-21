@@ -22,6 +22,15 @@ import java.util.List;
 
 import play.db.jpa.Model;
 
+/**
+ * This implementation of {@link Paginator} lets you paginate over the rows
+ * for a specified Play! framework Model.  The class must extend from the Model
+ * helper class. 
+ * 
+ * @author Lawrence McAlpin
+ *
+ * @param <T>
+ */
 public class ModelPaginator<T extends Model> extends JPAPaginator<Long, T> {
     private static final long serialVersionUID = -2064492602195638937L;
 

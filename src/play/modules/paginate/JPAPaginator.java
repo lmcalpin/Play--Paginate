@@ -24,6 +24,15 @@ import java.util.List;
 import play.db.jpa.Model;
 import play.modules.paginate.strategy.JPARecordLocatorStrategy;
 
+/**
+ * This implementation of {@link Paginator} lets you paginate over the rows
+ * for a specified JPA entity.
+ * 
+ * @author Lawrence McAlpin
+ *
+ * @param <K>
+ * @param <T>
+ */
 public class JPAPaginator<K, T extends Model> extends Paginator<K, T> implements Serializable {
     private static final long serialVersionUID = -2064492602195638937L;
 

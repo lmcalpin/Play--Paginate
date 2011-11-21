@@ -39,7 +39,9 @@ import play.mvc.Router;
 import play.mvc.Scope;
 
 /**
- * Controls pagination for a list. It can be used in one of three ways:
+ * Base class to control pagination for a list.
+ * Typically, a user would use the {@link JPAPaginator}, {@link ModelPaginator}, 
+ * or {@link ValuePaginator} implementations.
  * 
  * @author Lawrence McAlpin
  * 

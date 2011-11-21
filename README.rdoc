@@ -115,4 +115,11 @@ out of Z records."
 
 == Version History
 
-0.1 - 7/26/2011 - initial versioned release
+0.1 - 7/26/2011 
+ - initial versioned release
+0.11 - 9/13/2011 
+ - minor bug fixes
+??? - (usually the head Play! module will have the latest changes) 
+ - add support for Sets and Maps
+ - add multidb support
+ - support entities with non-default naming (@Entity(name="..."))
