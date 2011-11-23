@@ -12,3 +12,4 @@ build.bat
 test-result
 doc
 logs
+tmp

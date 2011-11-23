@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.apache.commons.lang.StringUtils;
 
+import play.Play;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.exceptions.UnexpectedException;
@@ -20,9 +21,12 @@ public class JPARecordLocatorStrategy<K, T extends Model> implements RecordLocat
     private Object[] params;
     private String orderBy;
     private final Class<T> typeToken;
+    private boolean useQueryCache;
 
     public JPARecordLocatorStrategy(Class<T> typeToken) {
         this.typeToken = typeToken;
+        String useQueryCacheStr = Play.configuration.getProperty("paginator.jpa.useQueryCache", "true");
+        this.useQueryCache = Boolean.parseBoolean(useQueryCacheStr);
     }
 
     /**
@@ -47,7 +51,7 @@ public class JPARecordLocatorStrategy<K, T extends Model> implements RecordLocat
      * @param params
      */
     public JPARecordLocatorStrategy(Class<T> typeToken, String filter, Object... params) {
-        this.typeToken = typeToken;
+        this(typeToken);
         this.filter = filter;
         this.params = params;
     }
@@ -136,6 +140,9 @@ public class JPARecordLocatorStrategy<K, T extends Model> implements RecordLocat
             }
         }
         Query query = em.createQuery(hql.toString());
+        if (useQueryCache) {
+            query.setHint("org.hibernate.cacheable", true); 
+        }
         if (params != null) {
             for (int i = 0; i < params.length; i++) {
                 query.setParameter(i + 1, params[i]);

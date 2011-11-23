@@ -58,6 +58,7 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
     private RecordLocatorStrategy<T> recordLocatorStrategy;
 
     private int pageNumber;
+    private Integer rowCount;
     private final String action;
     private String paramName;
     private final Map<String, Object> viewParams;
@@ -311,7 +312,10 @@ public abstract class Paginator<K, T> implements List<T>, Serializable {
     }
 
     public int size() {
-        return recordLocatorStrategy.count();
+        if (this.rowCount == null) {
+            this.rowCount = recordLocatorStrategy.count();
+        }
+        return this.rowCount;
     }
 
     public List<T> subList(int fromIndex, int toIndex) {
