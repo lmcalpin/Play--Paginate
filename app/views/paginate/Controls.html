@@ -37,7 +37,7 @@ boolean __active = __currentPage == __idx;
 %}
 		<li class="${__hasNext ? 'next' : 'off'}"><a href="${__nextURL}">&{'play-paginate.next'}</a></li>
 %{ if (_items.boundaryControlsEnabled) { %}	
-		<li class="${__currentPage == __maxPage ? 'off' : 'first'}"><a href="${__lastURL}">&{'play-paginate.last'}</a></li>
+		<li class="${__currentPage == __maxPage ? 'off' : 'last'}"><a href="${__lastURL}">&{'play-paginate.last'}</a></li>
 %{ } %}
 	</ul>
 </div>
