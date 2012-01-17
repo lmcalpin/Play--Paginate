@@ -27,6 +27,8 @@ if (_items != null) {
   }
   if (rowCount == 0) {
     play.templates.TagContext.parent().data.put('_executeNextElse', true);
+  }else{
+    play.templates.TagContext.parent().data.put('_executeNextElse', false);
   }
 }
 %}
