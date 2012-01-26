@@ -1,7 +1,10 @@
 package play.modules.paginate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import javax.persistence.PersistenceException;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -83,6 +86,14 @@ public class ModelPaginatorTest extends UnitTest {
     public void testModelsWithAlternateEntityNames() {
         ModelPaginator paginator = new ModelPaginator(AltMockModel.class);
         Assert.assertEquals(15, paginator.size());
+    }
+
+    @Test(expected=PersistenceException.class)
+    public void testErrorsOutIfInvalidKeyNameIsProvided() {
+        // since the key is actually named "id" this should fail
+        JPAPaginator paginator = new ModelPaginator(MockModel.class, Arrays.asList(10L)).withKeyNamed("foo");
+        paginator.size();
+        fail();
     }
 
 }

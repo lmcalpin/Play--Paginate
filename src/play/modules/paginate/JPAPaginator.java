@@ -55,4 +55,10 @@ public class JPAPaginator<K, T> extends Paginator<K, T> implements Serializable 
     protected JPARecordLocatorStrategy jpaStrategy() {
         return (JPARecordLocatorStrategy)getRecordLocatorStrategy();
     }
+    
+    public JPAPaginator withKeyNamed(String key) {
+        jpaStrategy().withKeyNamed(key);
+        return this;
+    }
+    
 }

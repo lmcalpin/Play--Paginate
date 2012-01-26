@@ -20,6 +20,8 @@ public class JPARecordLocatorStrategy<K, T> implements RecordLocatorStrategy<T> 
     private String orderBy;
     private final Class<T> typeToken;
     private boolean useQueryCache;
+    private String key = "id";
+    private String keyFilter;
 
     public JPARecordLocatorStrategy(Class<T> typeToken) {
         this.typeToken = typeToken;
@@ -37,7 +39,7 @@ public class JPARecordLocatorStrategy<K, T> implements RecordLocatorStrategy<T> 
         this(typeToken);
         String preparedStatementParameters = StringUtils.repeat("?,", keys.size());
         preparedStatementParameters = preparedStatementParameters.substring(0, preparedStatementParameters.length() - 1);
-        this.filter = "id IN (" + preparedStatementParameters + ")";
+        this.keyFilter = "IN (" + preparedStatementParameters + ")";
         this.params = keys.toArray();
     }
 
@@ -60,6 +62,10 @@ public class JPARecordLocatorStrategy<K, T> implements RecordLocatorStrategy<T> 
 
     public void setOrderBy(String orderBy) {
         this.orderBy = orderBy;
+    }
+
+    public void withKeyNamed(String key) {
+        this.key = key;
     }
 
     public Class<T> getModel() {
@@ -107,6 +113,8 @@ public class JPARecordLocatorStrategy<K, T> implements RecordLocatorStrategy<T> 
         hql.append("FROM " + getEntityName());
         if (filter != null) {
             hql.append(" WHERE " + filter);
+        } else if (keyFilter != null) {
+            hql.append(" WHERE " + key + " " + keyFilter);
         }
         if (applyOrderBy) {
             if (orderBy != null) {
