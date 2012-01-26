@@ -16,12 +16,14 @@ import play.exceptions.UnexpectedException;
 
 public class JPARecordLocatorStrategy<K, T> implements RecordLocatorStrategy<T> {
     private String filter;
+    // set when we are filtering the queries to a specific list of ids
+    private String keyFilter;
+    
     private Object[] params;
     private String orderBy;
     private final Class<T> typeToken;
     private boolean useQueryCache;
     private String key = "id";
-    private String keyFilter;
 
     public JPARecordLocatorStrategy(Class<T> typeToken) {
         this.typeToken = typeToken;
