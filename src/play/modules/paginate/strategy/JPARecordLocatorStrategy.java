@@ -11,11 +11,10 @@ import javax.persistence.Query;
 import org.apache.commons.lang.StringUtils;
 
 import play.Play;
-import play.db.jpa.GenericModel;
 import play.db.jpa.JPA;
 import play.exceptions.UnexpectedException;
 
-public class JPARecordLocatorStrategy<K, T extends GenericModel> implements RecordLocatorStrategy<T> {
+public class JPARecordLocatorStrategy<K, T> implements RecordLocatorStrategy<T> {
     private String filter;
     private Object[] params;
     private String orderBy;
