@@ -1,6 +1,5 @@
 package play.modules.paginate.strategy;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -12,11 +11,11 @@ import javax.persistence.Query;
 import org.apache.commons.lang.StringUtils;
 
 import play.Play;
+import play.db.jpa.GenericModel;
 import play.db.jpa.JPA;
-import play.db.jpa.Model;
 import play.exceptions.UnexpectedException;
 
-public class JPARecordLocatorStrategy<K, T extends Model> implements RecordLocatorStrategy<T> {
+public class JPARecordLocatorStrategy<K, T extends GenericModel> implements RecordLocatorStrategy<T> {
     private String filter;
     private Object[] params;
     private String orderBy;
