@@ -119,4 +119,8 @@ h2. Version History
  - support entities with non-default naming (@Entity(name="..."))
  - use query cache if available
  - bug fix: eliminate duplicate row count checks
+0.13 1/26/2012
+ - bug fix: css class of last control was incorrect (thanks @peteyhawkins)
+ - bug fix: else tag incorrectly displayed for non-empty lists if an if statement preceding the list is not satisfied (thanks @marioosh)
+ - support entities extending GenericModel
 

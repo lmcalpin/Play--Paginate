@@ -21,7 +21,7 @@ package play.modules.paginate;
 import java.io.Serializable;
 import java.util.List;
 
-import play.db.jpa.Model;
+import play.db.jpa.GenericModel;
 import play.modules.paginate.strategy.JPARecordLocatorStrategy;
 
 /**
@@ -33,7 +33,7 @@ import play.modules.paginate.strategy.JPARecordLocatorStrategy;
  * @param <K>
  * @param <T>
  */
-public class JPAPaginator<K, T extends Model> extends Paginator<K, T> implements Serializable {
+public class JPAPaginator<K, T extends GenericModel> extends Paginator<K, T> implements Serializable {
     private static final long serialVersionUID = -2064492602195638937L;
 
     public JPAPaginator(Class<T> typeToken, List<K> keys) {
