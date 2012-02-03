@@ -1,5 +1,6 @@
 package play.modules.paginate.strategy;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -134,7 +135,13 @@ public class JPARecordLocatorStrategy<K, T> implements RecordLocatorStrategy<T> 
                 // guard: only call this code if the user is using a version of Play! that 
                 // has the static getJPAConfig method on the JPA class (Play! <= 1.2.3 does not)
                 if (getJPAConfigMethod != null) {
-                    em = JPA.getJPAConfig(unitName).getJPAContext().em();
+                    // use reflection to support Play! <= 1.2.3
+                    //em = JPA.getJPAConfig(unitName).getJPAContext().em();
+                    Object config = getJPAConfigMethod.invoke(JPA.class, unitName);
+                    Method getJPAContextMethod = config.getClass().getMethod("getJPAContext");
+                    Object context = getJPAContextMethod.invoke(config);
+                    Method emMethod = context.getClass().getMethod("em");
+                    em = (EntityManager) emMethod.invoke(context);
                 }
             } catch (SecurityException e) {
                 // checked exceptions are stupid
@@ -143,6 +150,12 @@ public class JPARecordLocatorStrategy<K, T> implements RecordLocatorStrategy<T> 
                 // checked exceptions are stupid
                 throw new UnexpectedException(e);
             } catch (NoSuchMethodException e) {
+                // checked exceptions are still stupid
+                throw new UnexpectedException(e);
+            } catch (IllegalAccessException e) {
+                // checked exceptions are still stupid
+                throw new UnexpectedException(e);
+            } catch (InvocationTargetException e) {
                 // checked exceptions are still stupid
                 throw new UnexpectedException(e);
             }
