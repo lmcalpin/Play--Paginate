@@ -123,4 +123,6 @@ h2. Version History
  - bug fix: css class of last control was incorrect (thanks @peteyhawkins)
  - bug fix: else tag incorrectly displayed for non-empty lists if an if statement preceding the list is not satisfied (thanks @marioosh)
  - support entities extending GenericModel
-
+0.14 2/3/2012
+ - bug fix: fixed build failure when building against older versions of Play! due to API changes in Play!
+ 
